@@ -1,9 +1,7 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { IconoWhatsapp } from '@/components/Iconos';
-import { useDesplazado, useSeccionActiva } from '@/components/Reactividad';
+import { NavegacionViva } from '@/components/NavegacionViva';
 import { negocio } from '@/lib/negocio';
 
 const SECCIONES = [
@@ -25,29 +23,37 @@ const EN_TELEFONO = SECCIONES.filter((seccion) => seccion.corto !== null);
 // En orden de documento: el observador toma la última visible, no la primera.
 const IDS = ['motos', 'bicis', 'taller', 'horarios', 'donde', 'contacto'];
 
+/**
+ * El encabezado se imprime entero en el servidor. Lo único que ocurre en el
+ * navegador son dos atributos —la regla al desplazarse y el enlace de la
+ * sección en pantalla—, y de eso se ocupa `NavegacionViva`, que no dibuja nada.
+ */
 export function Encabezado() {
-  const activa = useSeccionActiva(IDS);
-  const desplazado = useDesplazado(32);
-
   return (
-    <header
-      data-desplazado={desplazado ? 'si' : undefined}
-      className="encabezado bg-papel-alto sticky top-0 z-40"
-    >
+    <header data-encabezado className="encabezado bg-papel-alto sticky top-0 z-40">
+      <NavegacionViva ids={IDS} />
+
       <div className="contenedor flex h-16 items-center justify-between gap-4 lg:h-19">
         {/* La marca del negocio, separada a las dos tintas del plano claro:
             la palabra en tinta y la moto en naranja. La versión sobre papel
-            vive en el pie. */}
+            vive en el pie.
+
+            Sin `priority`. La marca no es el elemento más grande de la pantalla
+            —eso es el titular— y precargarla con prioridad alta le robaba ancho
+            de banda a las tipografías, que sí deciden cuándo se puede leer el
+            cartel. Va con `fetchPriority="high"` para que no quede al final de
+            la cola, pero sin ocupar la primera ranura. */}
         <Link href="/" className="inline-block py-2 no-underline">
           <Image
             src="/marca/motos-beto-tinta.png"
             alt="Motos Beto"
             width={1600}
             height={254}
-            priority
-            // Se muestra a 40 px de alto, o sea 252 de ancho: sin esto el
-            // navegador se baja la marca a tamaño de cartel.
-            sizes="252px"
+            fetchPriority="high"
+            // Se muestra a 32 px de alto en el teléfono y a 40 en el escritorio;
+            // con la proporción de la pieza eso es 202 y 252 px de ancho. Decirlo
+            // por separado evita que el teléfono baje la variante del escritorio.
+            sizes="(min-width: 64rem) 252px, 202px"
             className="h-8 w-auto lg:h-10"
           />
         </Link>
@@ -57,7 +63,7 @@ export function Encabezado() {
             <a
               key={seccion.id}
               href={`#${seccion.id}`}
-              aria-current={activa === seccion.id ? 'true' : undefined}
+              data-seccion={seccion.id}
               className="enlace-seccion rotulo text-menuda no-underline"
             >
               {seccion.texto}
@@ -89,7 +95,7 @@ export function Encabezado() {
           <a
             key={seccion.id}
             href={`#${seccion.id}`}
-            aria-current={activa === seccion.id ? 'true' : undefined}
+            data-seccion={seccion.id}
             className="enlace-seccion rotulo inline-flex min-h-11 items-center px-0.5 whitespace-nowrap no-underline"
           >
             {seccion.corto}

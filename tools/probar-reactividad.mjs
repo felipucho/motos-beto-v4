@@ -10,6 +10,7 @@
  * palabras—, así que ninguna sección se esconde jamás esperando el scroll.
  */
 import { chromium } from 'playwright';
+import { leerNegocio } from './leer-marcado.mjs';
 
 const BASE = 'http://localhost:3000';
 const nav = await chromium.launch();
@@ -178,9 +179,7 @@ async function nueva(opciones = {}) {
 // --- 6. El marcado declara la ubicación real -------------------------------
 {
   const { ctx, pag } = await nueva();
-  const ld = JSON.parse(
-    await pag.evaluate(() => document.querySelector('script[type="application/ld+json"]').textContent),
-  );
+  const { negocio: ld } = await leerNegocio(pag);
   if (!ld.geo || ld.geo['@type'] !== 'GeoCoordinates') fallas.push('marcado: falta geo');
   else if (ld.geo.latitude !== -31.8769593 || ld.geo.longitude !== -62.7188429) {
     fallas.push(`marcado: coordenadas ${ld.geo.latitude}, ${ld.geo.longitude}`);

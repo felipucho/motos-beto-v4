@@ -1,4 +1,5 @@
 import { IconoFlecha } from '@/components/Iconos';
+import { MapaDiferido } from '@/components/MapaDiferido';
 import { TituloSeccion } from '@/components/TituloSeccion';
 import { direccion, negocio } from '@/lib/negocio';
 
@@ -33,13 +34,7 @@ export function Ubicacion() {
           </div>
 
           <div className="border-tinta border-[3px]">
-            <iframe
-              src={negocio.mapaEmbed}
-              title="Mapa con la ubicación de Motos Beto en B. Mitre 310, Las Varillas"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="block h-[22rem] w-full md:h-[28rem]"
-            />
+            <MapaDiferido />
           </div>
         </div>
       </div>

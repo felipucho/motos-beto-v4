@@ -15,7 +15,9 @@ export function Pie() {
           alt="Motos Beto"
           width={1600}
           height={254}
-          sizes="404px"
+          // Se ve a 48 px de alto en el teléfono y a 64 en pantalla ancha:
+          // 302 y 403 px de ancho con la proporción de la pieza.
+          sizes="(min-width: 48rem) 403px, 302px"
           className="h-12 w-auto md:h-16"
         />
 

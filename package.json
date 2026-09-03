@@ -27,5 +27,14 @@
     "playwright": "^1.62.1",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0"
-  }
+  },
+  "browserslist": [
+    "chrome >= 93",
+    "edge >= 93",
+    "firefox >= 90",
+    "safari >= 15.4",
+    "ios_saf >= 15.4",
+    "samsung >= 17",
+    "not dead"
+  ]
 }

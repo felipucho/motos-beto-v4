@@ -29,6 +29,11 @@ for (const v of vistas) {
   // y deja el marco en blanco. En su lugar el viewport se estira hasta la
   // altura del documento y se captura una pantalla común.
   await pag.locator('#donde').scrollIntoViewIfNeeded();
+  // El mapa ya no se carga solo: hay una tapa que espera el toque, para no
+  // bajarle 200 kB de terceros a quien no lo va a mirar. La revisión visual sí
+  // tiene que ver el mapa puesto, así que acá se lo pide.
+  const tapa = pag.locator('#donde a', { hasText: 'Ver el mapa' });
+  if ((await tapa.count()) > 0) await tapa.first().click();
   for (let intento = 0; intento < 20; intento += 1) {
     if (pag.frames().some((f) => f.url().includes('/maps/embed'))) break;
     await pag.waitForTimeout(500);

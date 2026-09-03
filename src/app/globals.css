@@ -1,6 +1,52 @@
 @import 'tailwindcss';
 
 /* ---------------------------------------------------------------------------
+   RESPALDO DE LA FAMILIA DE CARTEL
+
+   Mientras Archivo viaja, el texto se compone con Arial. Si Arial ocupa otro
+   ancho que Archivo, al llegar la fuente el texto se re-mide y la página salta:
+   así se iban 0,065 de CLS en la portada, donde los dos botones entraban en una
+   fila con el respaldo y en dos con la fuente buena —374 px contra 372 de
+   caja—.
+
+   next/font calcula un ajuste solo, y esta familia se usa a dos anchos: 76% en
+   el cartel y 100% en rótulos y botones. Con un número solo, uno de los dos
+   queda mal. Por eso van dos caras, cada una con su `size-adjust` medido contra
+   la fuente real (`node tools/probar-fuentes.mjs`):
+
+   - normal: Archivo es 3,3% más ancha que el ajuste que traía; 98,7 × 1,033.
+   - angosta: a `font-stretch: 76%` Archivo mide 0,91 de aquel ajuste.
+
+   Las métricas verticales son las que calculó next/font, que estaban bien: lo
+   que fallaba era el ancho.
+
+   Las pilas de abajo nombran la familia `Archivo` directamente y no
+   `var(--font-archivo)`. La variable trae pegado el respaldo automático de
+   next/font —`"Archivo", "Archivo Fallback"`—, que se interpone antes de estas
+   dos caras y las deja sin efecto. `adjustFontFallback: false` ya no lo
+   desactiva en Next 16, así que se lo saltea nombrando la familia. Si algún día
+   el nombre cambiara, `tools/probar-fuentes.mjs` lo avisa.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Cartel respaldo';
+  src: local('Arial');
+  ascent-override: 88.96%;
+  descent-override: 21.28%;
+  line-gap-override: 0%;
+  size-adjust: 102%;
+}
+
+@font-face {
+  font-family: 'Cartel respaldo angosto';
+  src: local('Arial');
+  ascent-override: 88.96%;
+  descent-override: 21.28%;
+  line-gap-override: 0%;
+  size-adjust: 89.8%;
+}
+
+/* ---------------------------------------------------------------------------
    Motos Beto — sistema de diseño
 
    El mundo es un afiche serigrafiado: planos de tinta apilados, cuatro tintas,
@@ -74,7 +120,9 @@
      Bitter (Huerta Tipográfica, Buenos Aires) es la egipcia del texto: remates
      rectos y mecánicos, no rústicos, que es lo que separa este mundo del
      afiche turístico. */
-  --font-cartel: var(--font-archivo), 'Arial Narrow', system-ui, sans-serif;
+  --font-cartel: 'Archivo', 'Cartel respaldo', Arial, sans-serif;
+  /* La misma familia a ancho 76%, con su propio respaldo calibrado. */
+  --font-cartel-angosto: 'Archivo', 'Cartel respaldo angosto', Arial, sans-serif;
   --font-texto: var(--font-bitter), Georgia, serif;
 
   /* Escala. El salto entre el cuerpo y el cartel es brusco a propósito: en un
@@ -243,7 +291,7 @@
   /* El cartel: caja alta, peso máximo, ancho de tres cuartos. Es el titular
      de afiche y la única voz que crece. */
   .cartel {
-    font-family: var(--font-cartel);
+    font-family: var(--font-cartel-angosto);
     font-weight: 900;
     font-stretch: 76%;
     text-transform: uppercase;
@@ -472,17 +520,34 @@
    chapa de la portada al cargar, y en las franjas del reloj al aparecer.
    --------------------------------------------------------------------------- */
 
+/* La pasada se anima con `transform`, no con `clip-path`: recortar obliga al
+   navegador a repintar el elemento en cada cuadro sobre el hilo principal,
+   justo mientras la página está arrancando. Una escala sobre una hoja aparte
+   la resuelve el compositor, en su propio hilo, y el gesto es el mismo: la
+   hoja de papel que tapaba la chapa se retira hacia la derecha y va dejando la
+   tinta a la vista. */
 @keyframes pasada {
   from {
-    clip-path: inset(0 100% 0 0);
+    transform: scaleX(1);
   }
   to {
-    clip-path: inset(0 0 0 0);
+    transform: scaleX(0);
   }
 }
 
 .pasada {
+  position: relative;
+}
+
+.pasada::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: var(--color-plano);
+  transform-origin: right center;
   animation: pasada 780ms var(--ease-pasada) both;
+  pointer-events: none;
 }
 
 /* La versión que espera al observador. Acá la pasada no puede tapar nada: lo
@@ -504,8 +569,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pasada {
-    animation: none;
+  /* Se quita la hoja, no la animación: dejarla quieta la dejaría puesta y
+     taparía la chapa para siempre. */
+  .pasada::after {
+    display: none;
   }
 
   [data-js='si'] .revelar .reloj-tramo,

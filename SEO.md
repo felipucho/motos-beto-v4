@@ -107,22 +107,92 @@ su cuenta.
 
 ### Rendimiento
 
-Medido sobre el build de producción servido localmente:
+Medido con `node tools/medir-lab.mjs`, que reproduce el apretón de PageSpeed
+móvil —4G lento a 1,6 Mbps con 150 ms de latencia, CPU cuatro veces más lenta—
+sobre el build de producción. Comparado contra el mismo build antes de esta
+ronda:
 
-| | |
-| --- | --- |
-| Peticiones | 13 |
-| HTML | 16 kB (gzip) |
-| JavaScript | 148 kB en 8 archivos |
-| Fuentes | 122 kB en 2 archivos |
-| CSS | 7 kB |
-| CLS | 0 |
-| TTFB | 5 ms |
+| | Antes | Ahora |
+| --- | --- | --- |
+| FCP | 804 ms | **524 ms** |
+| LCP | 804 ms | **524 ms** |
+| CLS | 0,049 | **0,0009** |
+| Tarea larga más larga | 84 ms | 74 ms |
+| Peticiones | 16 | 13 |
+| Marca del encabezado | 19 kB (PNG a 640 px) | **6 kB** (AVIF a 384 px) |
+| Google Maps en la visita | 12 peticiones, 223 kB | **ninguna** |
+| Fuentes | 121 kB | 121 kB |
+| JavaScript | 482 kB | 482 kB |
 
-Las fuentes son el rubro más pesado —88 kB de Archivo variable con eje de
-ancho, 34 kB de Bitter—. Se podría recortar fijando pesos concretos en vez de
-la familia variable, pero el titular de portada usa el eje de ancho a 76 y los
-rótulos el peso 700: recortarlo cambia el diseño, así que se dejó.
+Lo que movió cada cosa:
+
+**El CSS iba como hoja aparte y bloqueaba el primer pintado.** Pesa 7 kB
+comprimido —menos que la ida y vuelta que hacía falta para ir a buscarlo—. Con
+`inlineCss` viaja dentro del HTML: el documento engorda de 17 a 39 kB
+comprimidos y el primer pintado baja 260 ms. Se midió apagándolo y volviéndolo
+a encender, tres corridas de cada lado.
+
+**El CLS era la fuente.** Mientras Archivo viaja, el texto se compone con
+Arial, y en la portada los dos botones entraban en un renglón con el respaldo y
+en dos con la fuente buena: 64 px de salto, por dos píxeles de diferencia
+—374 contra 372 de caja—. El respaldo que calcula next/font venía 3,3% angosto,
+y no puede ser de otra manera: calcula un ajuste solo y esta familia se usa a
+dos anchos, 76% en el cartel y 100% en rótulos y botones. Ahora los respaldos
+se declaran a mano en `globals.css`, uno por ancho, con el `size-adjust` medido
+contra la fuente real. `tools/probar-fuentes.mjs` los mantiene calibrados y
+falla si alguno se corre.
+
+**La marca del encabezado se precargaba con prioridad alta** y le sacaba ancho
+de banda a las tipografías, que son las que deciden cuándo se puede leer el
+cartel. Ya no: va con `fetchPriority="high"`, que la pone temprano en la cola
+sin ocupar la primera ranura. Y se servía a 640 px de ancho para verse a 202:
+con AVIF y los anchos que el sitio pide de verdad quedó en 6 kB.
+
+**El mapa se bajaba siempre.** Más de 200 kB de scripts, tipografías y azulejos
+de Google, para una sección que está a un scroll de distancia. Ahora hay una
+tapa impresa con la misma tinta que el resto, del tamaño exacto del mapa —así
+no se mueve una línea al cambiar—, y el mapa entra al tocarla. La tapa es un
+enlace de verdad a la ficha de Google: sin JavaScript el toque abre el mapa
+allá, que es la respuesta correcta a "quiero ver dónde queda".
+
+**La pasada se animaba con `clip-path`,** que obliga a repintar en cada cuadro
+sobre el hilo principal, justo mientras la página arranca. Ahora es una hoja de
+papel que se retira con `transform`, que resuelve el compositor en su propio
+hilo. El gesto es el mismo.
+
+**El encabezado hidrataba entero** por dos atributos que cambian al hacer
+scroll. Ahora se imprime en el servidor y `NavegacionViva` toca esos dos
+atributos sobre el DOM, sin volver a renderizar en cada píxel de scroll.
+
+### Lo que no se pudo bajar
+
+**El JavaScript sigue en 482 kB, y es casi todo React.** Los dos chunks
+grandes —224 y 162 kB— son `react` y `react-dom`; lo que agrega este sitio son
+unas decenas de kB. Bajarlo de verdad significa sacar React, y con él el estado
+de apertura en vivo, el reloj de la semana, la aparición del reloj y el mapa a
+demanda. Es una reescritura, no una optimización, y no entra en el encargo.
+
+**Los polyfills que reporta Lighthouse viven en el bundle `nomodule`,** que
+ningún navegador moderno descarga ni ejecuta —se verificó: no aparece en la
+cronología de recursos de Chrome—. Lighthouse los cuenta igual porque analiza
+el bundle sin mirar el atributo. Next.js emite ese chunk siempre y no lo
+expone a configuración. Lo que sí se puede acotar es lo que SWC transpila del
+código propio, y para eso `package.json` declara ahora un `browserslist`
+moderno.
+
+**El `'unsafe-inline'` de la CSP se queda.** Sacarlo exige un `nonce` por
+respuesta, y un nonce exige renderizar en cada visita: el sitio dejaría de ser
+estático y el TTFB pasaría de milisegundos a decenas. Para una página sin
+formularios, sin sesión y sin un solo dato de usuario, el intercambio no cierra.
+Por la misma razón no se declara `require-trusted-types-for 'script'`: el
+arranque de Next.js y el marcado JSON-LD escriben por `innerHTML`, y activarlo
+rompería el hidratado sin cerrar ningún agujero real. Sí se sumaron
+`Cross-Origin-Opener-Policy: same-origin` y
+`Cross-Origin-Resource-Policy: same-site`.
+
+**Las fuentes siguen en 121 kB.** 88 son de Archivo variable con eje de ancho,
+que es lo que hace posible el cartel a ancho 76 y los rótulos a 100 con un solo
+archivo. Fijar pesos concretos ahorraría, pero cambia el diseño.
 
 Todo lo estático se sirve con `immutable` a un año; el HTML, comprimido.
 
@@ -220,6 +290,16 @@ npm run build
 El HTML de producción queda en `.next/server/app/index.html`, y el sitemap y el
 robots en `sitemap.xml.body` y `robots.txt.body` de esa misma carpeta. Ahí se
 verifican título, canónica, encabezados y JSON-LD sin necesidad de publicar.
+
+Para el rendimiento, con el sitio servido en `next start`:
+
+```bash
+node tools/medir-lab.mjs http://localhost:3100/
+```
+
+Estrangula la red y la CPU como PageSpeed móvil e informa FCP, LCP, CLS, tareas
+largas y el peso por tipo de recurso. Es lo único que hace comparables dos
+versiones: sin el mismo apretón, los números no dicen nada.
 
 Con el sitio ya publicado, los dos controles que faltan son
 [PageSpeed Insights](https://pagespeed.web.dev/) para las métricas de campo y

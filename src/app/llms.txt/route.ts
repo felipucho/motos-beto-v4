@@ -14,6 +14,11 @@ import { siteUrl } from '@/lib/site';
  *
  * No agrega nada que no esté en pantalla: es la misma información, ordenada
  * para lectura de máquina.
+ *
+ * Los enlaces van en markdown —`[texto](url)`— y no como URL suelta: la
+ * convención de `llms.txt` es un documento markdown válido, y un lector que
+ * busca enlaces busca la sintaxis de enlace, no una dirección en medio de un
+ * renglón.
  */
 export const dynamic = 'force-static';
 
@@ -35,11 +40,12 @@ function cuerpo(): string {
     '',
     seccion('Contacto', [
       `- Dirección: ${negocio.direccion}`,
-      `- Teléfono: ${negocio.telefonoTexto} (${negocio.telefonoLink.replace('tel:', '')})`,
-      `- WhatsApp: ${negocio.whatsappTexto}`,
-      `- Instagram: ${negocio.instagramUsuario} — ${negocio.instagramLink}`,
-      `- Mapa: ${negocio.mapaLink}`,
-      `- Sitio: ${siteUrl}`,
+      `- [Teléfono ${negocio.telefonoTexto}](${negocio.telefonoLink})`,
+      `- [WhatsApp ${negocio.whatsappTexto}](${negocio.whatsappLink})`,
+      `- [Instagram ${negocio.instagramUsuario}](${negocio.instagramLink})`,
+      `- [Ubicación en Google Maps](${negocio.mapaLink})`,
+      `- [Cómo llegar](${negocio.comoLlegarLink})`,
+      `- [Sitio web](${siteUrl}/)`,
     ]),
     seccion(
       'Horarios',
@@ -81,15 +87,16 @@ function cuerpo(): string {
     // Las secciones de la página, para poder citar el ancla exacta en vez de
     // la portada entera.
     seccion('Secciones del sitio', [
-      `- Motos: ${siteUrl}/#motos`,
-      `- Bicicletas: ${siteUrl}/#bicis`,
-      `- Taller y repuestos: ${siteUrl}/#taller`,
-      `- Horarios: ${siteUrl}/#horarios`,
-      `- Dónde estamos: ${siteUrl}/#donde`,
-      `- Contacto: ${siteUrl}/#contacto`,
+      `- [Motos](${siteUrl}/#motos): marcas, condición y las categorías más buscadas.`,
+      `- [Bicicletas](${siteUrl}/#bicis): tipos, marcas, accesorios y alquiler.`,
+      `- [Taller y repuestos](${siteUrl}/#taller): service, mecánica, cubiertas y cascos.`,
+      `- [Horarios](${siteUrl}/#horarios): la semana completa, día por día.`,
+      `- [Dónde estamos](${siteUrl}/#donde): dirección y mapa.`,
+      `- [Contacto](${siteUrl}/#contacto): teléfono, WhatsApp e Instagram.`,
     ]),
     seccion('Estos mismos datos en JSON', [
-      `- ${siteUrl}/data/negocio.json`,
+      `- [Ficha del negocio en JSON](${siteUrl}/data/negocio.json)`,
+      `- [Mapa del sitio](${siteUrl}/sitemap.xml)`,
       '',
       'Mismo origen que esta página y que el marcado JSON-LD: los tres se',
       'generan desde el archivo de datos del negocio, así que no pueden',

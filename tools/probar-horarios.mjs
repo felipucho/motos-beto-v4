@@ -5,6 +5,7 @@
  */
 import { chromium } from 'playwright';
 import { negocio } from '../data/negocio.js';
+import { leerNegocio } from './leer-marcado.mjs';
 
 const BASE = 'http://localhost:3000';
 
@@ -63,9 +64,7 @@ for (const caso of casos) {
 const contexto = await navegador.newContext();
 const pagina = await contexto.newPage();
 await pagina.goto(BASE, { waitUntil: 'domcontentloaded' });
-const ld = JSON.parse(
-  await pagina.evaluate(() => document.querySelector('script[type="application/ld+json"]').textContent),
-);
+const { negocio: ld } = await leerNegocio(pagina);
 const spec = ld.openingHoursSpecification;
 const esperados = [
   ['Monday', '08:30', '12:30'], ['Monday', '15:30', '19:30'],
