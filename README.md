@@ -76,10 +76,19 @@ están fijadas, así que la foto entra sin mover el resto del layout.
 
 ## Antes de publicar
 
-1. **Definir `NEXT_PUBLIC_SITE_URL`** en Vercel, con el dominio real y sin
-   barra final (`https://motosbeto.com.ar`). Sin esa variable el sitemap, el
-   `robots.txt`, la URL canónica y el marcado `LocalBusiness` apuntan a
-   `localhost` y el SEO no sirve para nada.
+1. **Conectar `www.motosbeto.com` al proyecto en Vercel.** El sitio declara ese
+   dominio como canónico (`CANONICO` en `src/lib/site.ts`), así que es la
+   dirección que el sitemap, el `robots.txt`, la canónica y el marcado
+   `LocalBusiness` le dan a Google. Mientras el dominio no esté conectado, esas
+   URLs apuntan a un host que no responde, y una canónica que no resuelve saca
+   la página del índice: es peor que apuntar al `.vercel.app`. Al conectarlo,
+   dejar el ápex `motosbeto.com` redirigiendo a `www` y no sirviendo la página,
+   para que haya un solo host con contenido.
+
+   Si el dominio cambia, se corrige sin tocar código definiendo
+   **`NEXT_PUBLIC_SITE_URL`** en Vercel, con la dirección real y sin barra
+   final; esa variable manda sobre la constante. Un build de producción nunca
+   emite `localhost`.
 2. **Reconfirmar el horario de la tarde con el dueño.** `data/negocio.js` dice
    `15:30 a 19:30`; la bio de Instagram dice `16:00 a 20:00`. Se publicó el
    primero por decisión del usuario, pero el dato conviene chequearlo.
@@ -140,6 +149,9 @@ src/lib/texto.ts         Enumerar listas como las escribe una persona
 src/lib/fotos.ts         Registro de fotos disponibles
 src/lib/site.ts          URL pública del sitio
 src/app/layout.tsx       Tipografías, metadatos, contrato de dirección
+src/app/robots.ts        robots.txt, con los rastreadores de IA nombrados
+src/app/sitemap.ts       sitemap.xml
+src/app/llms.txt/        El negocio en markdown plano, para modelos
 src/app/globals.css      Sistema de diseño: primitivas, roles, componentes
 src/app/page.tsx         Composición de la página
 src/components/          Secciones y piezas compartidas

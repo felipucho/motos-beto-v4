@@ -2,12 +2,30 @@
  * URL pública del sitio. Necesaria para el sitemap, robots.txt, las URLs
  * canónicas y el marcado LocalBusiness, que exigen rutas absolutas.
  *
- * Definir NEXT_PUBLIC_SITE_URL en Vercel antes de publicar. Sin esa variable
- * el sitio funciona igual en desarrollo, pero las URLs absolutas apuntan a
- * localhost y el SEO no sirve.
+ * Se resuelve en dos pasos, en este orden:
+ *
+ * 1. `NEXT_PUBLIC_SITE_URL`, si está definida. Es la salida de emergencia: si
+ *    el dominio cambia, se corrige desde Vercel sin tocar el código.
+ * 2. `CANONICO`, la constante de acá abajo, en cualquier build que no sea de
+ *    desarrollo. Es lo que se publica.
+ *
+ * En desarrollo la cascada termina en localhost, que es lo correcto ahí.
+ *
+ * A propósito NO se consulta `VERCEL_PROJECT_PRODUCTION_URL`, que Vercel
+ * inyecta sola en el build. Parece la opción obvia y es una trampa: devuelve el
+ * dominio más corto del proyecto, así que hoy devolvería `motosbeto.vercel.app`
+ * y mañana, con el dominio propio conectado, el ápex `motosbeto.com` en vez del
+ * `www`. La canónica tiene que nombrar un host y siempre el mismo: dos hosts
+ * sirviendo la misma página con canónicas distintas parten las señales en dos y
+ * es peor que no declarar ninguna. Acá el host se elige, no se adivina.
  */
-export const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
-).replace(/\/$/, '');
+const CANONICO = 'https://www.motosbeto.com';
 
-export const esProduccion = Boolean(process.env.NEXT_PUBLIC_SITE_URL);
+const crudo =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : CANONICO);
+
+export const siteUrl = crudo.replace(/\/$/, '');
+
+/** Verdadero cuando la URL resuelta es pública y no el servidor de desarrollo. */
+export const esProduccion = !siteUrl.startsWith('http://localhost');
