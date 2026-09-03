@@ -17,7 +17,7 @@
  *                                        -> para planos claros (encabezado)
  *   public/marca/motos-beto-papel.png    palabra en papel, moto en naranja vivo
  *                                        -> para planos de tinta (pie)
- *   src/app/icon.png                     la moto sobre un cuadrado de tinta
+ *   src/app/icon.png                     nombre y moto sobre un cuadrado de papel
  *                                        -> el favicon
  *
  * USO: node tools/producir-marca.mjs
@@ -55,13 +55,14 @@ const PIEZAS = [
   },
   {
     salida: 'src/app/icon.png',
-    recorte: 'moto',
+    recorte: 'todo',
     cuadrado: 256,
-    fondo: TINTAS.tinta,
-    // El favicon se ve a 16 px: la moto va en el naranja vivo, que es el que
-    // aguanta sobre tinta, y ocupa casi todo el cuadrado porque el dibujo es
-    // apaisado (1,96:1) y a esa escala cada píxel cuenta.
-    moto: TINTAS.naranjaVivo,
+    fondo: TINTAS.papelAlto,
+    // El favicon se ve a 16 px sobre pestañas blancas: nombre y moto van en
+    // las mismas tintas que el encabezado (planos claros), para que la pestaña
+    // lea el nombre del negocio en vez de sólo un ícono suelto.
+    palabra: TINTAS.tinta,
+    moto: TINTAS.naranja,
     ocupacion: 0.86,
   },
 ];

@@ -17,3 +17,6 @@ next-env.d.ts
 
 # Salida de tools/probar-404.mjs cuando se corre sin carpeta
 undefined/
+
+# Sesiones y worktrees de Claude Code: locales
+.claude/

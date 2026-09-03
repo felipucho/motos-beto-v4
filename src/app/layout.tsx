@@ -22,7 +22,8 @@ const bitter = Bitter({
   display: 'swap',
 });
 
-const titulo = 'Motos Beto — Motos, bicicletas y repuestos en Las Varillas, Córdoba';
+const titulo = 'Motos Beto';
+const tituloLargo = 'Motos Beto — Motos, bicicletas y repuestos en Las Varillas, Córdoba';
 const descripcion =
   'Motos, bicicletas, repuestos y taller propio en B. Mitre 310, Las Varillas. Honda, Yamaha, Guerrero, Corven y CF Moto. Financiación en cuotas, gestoría y envíos.';
 
@@ -51,10 +52,10 @@ export const metadata: Metadata = {
     locale: 'es_AR',
     url: siteUrl,
     siteName: negocio.nombre,
-    title: titulo,
+    title: tituloLargo,
     description: descripcion,
   },
-  twitter: { card: 'summary', title: titulo, description: descripcion },
+  twitter: { card: 'summary', title: tituloLargo, description: descripcion },
   robots: {
     index: true,
     follow: true,

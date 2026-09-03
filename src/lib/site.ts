@@ -14,12 +14,15 @@
  * A propósito NO se consulta `VERCEL_PROJECT_PRODUCTION_URL`, que Vercel
  * inyecta sola en el build. Parece la opción obvia y es una trampa: devuelve el
  * dominio más corto del proyecto, así que hoy devolvería `motosbeto.vercel.app`
- * y mañana, con el dominio propio conectado, el ápex `motosbeto.com` en vez del
- * `www`. La canónica tiene que nombrar un host y siempre el mismo: dos hosts
- * sirviendo la misma página con canónicas distintas parten las señales en dos y
- * es peor que no declarar ninguna. Acá el host se elige, no se adivina.
+ * y mañana lo que el proyecto tenga conectado, sin garantía de que sea el host
+ * que elegimos. La canónica tiene que nombrar un host y siempre el mismo: dos
+ * hosts sirviendo la misma página con canónicas distintas parten las señales en
+ * dos y es peor que no declarar ninguna. Acá el host se elige, no se adivina.
+ *
+ * El host elegido es el ápex, sin `www`. `www.motosbeto.com` tiene que
+ * redirigir acá, no servir la página.
  */
-const CANONICO = 'https://www.motosbeto.com';
+const CANONICO = 'https://motosbeto.com';
 
 const crudo =
   process.env.NEXT_PUBLIC_SITE_URL ||

@@ -76,13 +76,13 @@ están fijadas, así que la foto entra sin mover el resto del layout.
 
 ## Antes de publicar
 
-1. **Conectar `www.motosbeto.com` al proyecto en Vercel.** El sitio declara ese
+1. **Conectar `motosbeto.com` al proyecto en Vercel.** El sitio declara ese
    dominio como canónico (`CANONICO` en `src/lib/site.ts`), así que es la
    dirección que el sitemap, el `robots.txt`, la canónica y el marcado
    `LocalBusiness` le dan a Google. Mientras el dominio no esté conectado, esas
    URLs apuntan a un host que no responde, y una canónica que no resuelve saca
    la página del índice: es peor que apuntar al `.vercel.app`. Al conectarlo,
-   dejar el ápex `motosbeto.com` redirigiendo a `www` y no sirviendo la página,
+   dejar `www.motosbeto.com` redirigiendo al ápex y no sirviendo la página,
    para que haya un solo host con contenido.
 
    Si el dominio cambia, se corrige sin tocar código definiendo
