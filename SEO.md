@@ -79,10 +79,22 @@ pueblo. El `<title>` es la línea azul del resultado de Google, no sólo el rót
 de la pestaña: para alguien que busca "motos las varillas", un título que no
 nombra ninguna de las dos cosas no compite.
 
-Pasó a `Motos Beto — Motos, bicicletas y repuestos en Las Varillas` (58
-caracteres, dentro de lo que la SERP muestra sin cortar). El nombre sigue
-adelante, así que la pestaña —que corta cerca del carácter 30— se lee igual.
-La versión con `Córdoba` quedó para Open Graph y Twitter, donde hay lugar.
+Pasó a `Motos Beto — Motos, bicicletas y repuestos en Las Varillas` (60
+caracteres contando el guion largo, dentro de lo que la SERP muestra sin
+cortar). El nombre sigue adelante, así que la pestaña —que corta cerca del
+carácter 30— se lee igual. La versión con `Córdoba` quedó para Open Graph y
+Twitter, donde hay lugar.
+
+**La meta description medía 164 caracteres.** Google corta cerca de los 160,
+así que `y envíos.` se perdía en puntos suspensivos: se truncaba justo la
+frase que menciona un servicio que no todos los competidores dan. Quedó en 147
+cambiando `Financiación en cuotas` por `Cuotas`, que dice lo mismo y entra
+entera.
+
+Los dos `alt="Motos Beto"` del encabezado y el pie se revisaron y **se dejaron
+como estaban**: son el logo del negocio, y para un logo el nombre de la marca
+es la descripción correcta. En el encabezado además hace de texto del enlace al
+inicio, donde "Motos Beto" es exactamente lo que corresponde leer.
 
 ## Lo que falta, y no es código
 

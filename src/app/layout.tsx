@@ -28,8 +28,11 @@ const bitter = Bitter({
 // del carácter 30— siga leyéndose "Motos Beto".
 const titulo = 'Motos Beto — Motos, bicicletas y repuestos en Las Varillas';
 const tituloRedes = 'Motos Beto — Motos, bicicletas y repuestos en Las Varillas, Córdoba';
+// 147 caracteres. Google corta la descripción cerca de los 160, así que la
+// última frase tiene que entrar entera: si se trunca, el resultado termina en
+// puntos suspensivos y se pierde justo lo que decide la visita.
 const descripcion =
-  'Motos, bicicletas, repuestos y taller propio en B. Mitre 310, Las Varillas. Honda, Yamaha, Guerrero, Corven y CF Moto. Financiación en cuotas, gestoría y envíos.';
+  'Motos, bicicletas, repuestos y taller propio en B. Mitre 310, Las Varillas. Honda, Yamaha, Guerrero, Corven y CF Moto. Cuotas, gestoría y envíos.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
