@@ -89,9 +89,11 @@ están fijadas, así que la foto entra sin mover el resto del layout.
    **`NEXT_PUBLIC_SITE_URL`** en Vercel, con la dirección real y sin barra
    final; esa variable manda sobre la constante. Un build de producción nunca
    emite `localhost`.
-2. **Reconfirmar el horario de la tarde con el dueño.** `data/negocio.js` dice
-   `15:30 a 19:30`; la bio de Instagram dice `16:00 a 20:00`. Se publicó el
-   primero por decisión del usuario, pero el dato conviene chequearlo.
+2. **Corregir el horario en la bio de Instagram.** El de la tarde quedó
+   confirmado en `15:30 a 19:30`, que es lo que publican `data/negocio.js`, la
+   web y el marcado `LocalBusiness`. La bio de Instagram dice `16:00 a 20:00`
+   y es la que está mal: conviene alinearla, y de paso revisar que la ficha de
+   Google diga lo mismo.
 3. **Reconfirmar el teléfono fijo.** Se publica `(03533) 68-9287`, que es el que
    coincide con el WhatsApp. Páginas Amarillas publica además
    `(03533) 42-1487`, que quedó descartado.

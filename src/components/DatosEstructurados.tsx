@@ -8,8 +8,12 @@ import { siteUrl } from '@/lib/site';
  * de lo que se ve en pantalla.
  *
  * La coordenada sale de la ficha de Google del propio negocio, no de una
- * búsqueda por dirección. No se declaran `priceRange` ni `aggregateRating`:
- * no existen y no se inventan.
+ * búsqueda por dirección.
+ *
+ * No se declara `aggregateRating` ni `review`: las reseñas propias publicadas
+ * en el marcado están prohibidas por Google para negocios locales, y desde
+ * 2019 no producen estrellas en el resultado. Las que cuentan son las de la
+ * ficha, escritas por clientes.
  */
 export function DatosEstructurados() {
   const datos = {
@@ -41,6 +45,11 @@ export function DatosEstructurados() {
       name: direccion.localidad,
     },
     openingHoursSpecification: especificacionSchema(),
+    // Rango de precios, en la escala de uno a cuatro símbolos que usa Google.
+    // Es una banda, no un precio: dice dónde se ubica el negocio frente a los
+    // del rubro, y lo eligió el dueño. No compromete ningún número concreto.
+    priceRange: '$',
+    currenciesAccepted: 'ARS',
     paymentAccepted: negocio.pagos.map((pago) => pago.forma).join(', '),
     // Las marcas son la pregunta que más se hace en el mostrador —"¿tenés
     // Honda?"— y la que un modelo necesita poder responder sin leer la página

@@ -50,10 +50,10 @@ coordenadas, teléfono, horarios día por día (mañana y tarde separadas),
 `areaServed`, `sameAs` a Instagram, `hasMap` y un catálogo con las cinco marcas
 —Honda, Yamaha, Guerrero, Corven, CF Moto— y los servicios del taller.
 
-Es más completo que el de la mayoría de los comercios del rubro. Falta
-`priceRange`, que Google lista como recomendado para negocios locales; se dejó
-afuera a propósito porque no hay un rango de precios real que declarar y un
-valor inventado es peor que la ausencia.
+Es más completo que el de la mayoría de los comercios del rubro. Declara además
+`priceRange: '$'` y `currenciesAccepted: 'ARS'`. El rango lo eligió el dueño: es
+una banda en la escala de uno a cuatro símbolos que usa Google, no un precio, así
+que ubica al negocio frente al resto del rubro sin comprometer ningún número.
 
 **No se declara `aggregateRating` ni `review`, y no se va a declarar.** Las
 reseñas propias autopublicadas en el marcado están explícitamente prohibidas por
@@ -111,10 +111,11 @@ Por orden de impacto:
    la ficha, y pedirla en el momento de entregar una moto o terminar un
    arreglo, es todo el método. Importa el flujo sostenido más que el total.
 
-3. **Confirmar el horario de la tarde.** El sitio publica `15:30 a 19:30` y la
-   bio de Instagram dice `16:00 a 20:00`. Ese horario está en el marcado
-   `LocalBusiness` y debería coincidir con la ficha: un horario mal declarado
-   manda gente a un local cerrado.
+3. **Alinear el horario en Instagram y en la ficha.** El de la tarde quedó
+   confirmado en `15:30 a 19:30`, que es lo que publican el sitio y el marcado
+   `LocalBusiness`. La bio de Instagram dice `16:00 a 20:00` y es la que está
+   mal. Un horario mal declarado manda gente a un local cerrado, y Google
+   compara lo que dicen las distintas fuentes del negocio.
 
 4. **Fotos en la ficha.** Las fichas con fotos reciben bastante más contacto
    que las que no tienen. Frente del local, mostrador, taller.
