@@ -2,27 +2,28 @@
  * URL pública del sitio. Necesaria para el sitemap, robots.txt, las URLs
  * canónicas y el marcado LocalBusiness, que exigen rutas absolutas.
  *
- * Se resuelve en cascada, de lo más específico a lo más genérico:
+ * Se resuelve en dos pasos, en este orden:
  *
- * 1. `NEXT_PUBLIC_SITE_URL`: el dominio propio, cuando exista. Es la única que
- *    hay que definir a mano, y manda sobre todo lo demás.
- * 2. `VERCEL_PROJECT_PRODUCTION_URL`: la Vercel la inyecta sola en el build y
- *    siempre apunta al dominio de producción del proyecto, nunca al de una
- *    vista previa. Viene sin protocolo, así que se le antepone https.
- * 3. `PRODUCCION`: la dirección publicada hoy, como último recurso. Está acá
- *    para que un build de producción no pueda emitir `localhost` aunque falte
- *    toda la configuración: una canónica a localhost desindexa el sitio.
+ * 1. `NEXT_PUBLIC_SITE_URL`, si está definida. Es la salida de emergencia: si
+ *    el dominio cambia, se corrige desde Vercel sin tocar el código.
+ * 2. `CANONICO`, la constante de acá abajo, en cualquier build que no sea de
+ *    desarrollo. Es lo que se publica.
  *
  * En desarrollo la cascada termina en localhost, que es lo correcto ahí.
+ *
+ * A propósito NO se consulta `VERCEL_PROJECT_PRODUCTION_URL`, que Vercel
+ * inyecta sola en el build. Parece la opción obvia y es una trampa: devuelve el
+ * dominio más corto del proyecto, así que hoy devolvería `motosbeto.vercel.app`
+ * y mañana, con el dominio propio conectado, el ápex `motosbeto.com` en vez del
+ * `www`. La canónica tiene que nombrar un host y siempre el mismo: dos hosts
+ * sirviendo la misma página con canónicas distintas parten las señales en dos y
+ * es peor que no declarar ninguna. Acá el host se elige, no se adivina.
  */
-const PRODUCCION = 'https://motosbeto.vercel.app';
-
-const dominioVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+const CANONICO = 'https://www.motosbeto.com';
 
 const crudo =
   process.env.NEXT_PUBLIC_SITE_URL ||
-  (dominioVercel ? `https://${dominioVercel}` : '') ||
-  (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : PRODUCCION);
+  (process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : CANONICO);
 
 export const siteUrl = crudo.replace(/\/$/, '');
 
