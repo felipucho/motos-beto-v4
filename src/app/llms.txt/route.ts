@@ -78,6 +78,30 @@ function cuerpo(): string {
       `- Gestoría: ${tramites.gestoria}`,
       `- Seguros: ${tramites.seguros}`,
     ]),
+    // Las secciones de la página, para poder citar el ancla exacta en vez de
+    // la portada entera.
+    seccion('Secciones del sitio', [
+      `- Motos: ${siteUrl}/#motos`,
+      `- Bicicletas: ${siteUrl}/#bicis`,
+      `- Taller y repuestos: ${siteUrl}/#taller`,
+      `- Horarios: ${siteUrl}/#horarios`,
+      `- Dónde estamos: ${siteUrl}/#donde`,
+      `- Contacto: ${siteUrl}/#contacto`,
+    ]),
+    seccion('Estos mismos datos en JSON', [
+      `- ${siteUrl}/data/negocio.json`,
+      '',
+      'Mismo origen que esta página y que el marcado JSON-LD: los tres se',
+      'generan desde el archivo de datos del negocio, así que no pueden',
+      'contradecirse.',
+    ]),
+    // Decirlo explícito evita que un modelo complete el hueco por su cuenta.
+    seccion('Lo que este sitio no publica', [
+      '- Precios y coeficientes de financiación: cambian seguido y se',
+      '  consultan en el local.',
+      '- Catálogo por modelo, con ficha técnica, stock o disponibilidad: se',
+      '  publican las marcas y las categorías más buscadas, no unidades.',
+    ]),
   ].join('\n');
 }
 
@@ -85,7 +109,10 @@ export function GET(): Response {
   return new Response(cuerpo(), {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=0, must-revalidate',
+      // Mismo criterio que `/data/negocio.json`: el contenido cambia cuando el
+      // dueño corrige un dato, o sea casi nunca. Revalidar en cada lectura
+      // hacía trabajar al servidor de más sin ganar frescura.
+      'Cache-Control': 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800',
     },
   });
 }

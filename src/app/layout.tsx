@@ -34,6 +34,15 @@ const tituloRedes = 'Motos Beto — Motos, bicicletas y repuestos en Las Varilla
 const descripcion =
   'Motos, bicicletas, repuestos y taller propio en B. Mitre 310, Las Varillas. Honda, Yamaha, Guerrero, Corven y CF Moto. Cuotas, gestoría y envíos.';
 
+// La marca sobre papel, en la caja que piden Open Graph y Twitter. La produce
+// tools/producir-marca.mjs desde el mismo original que el resto de las piezas.
+const imagenCompartir = {
+  url: '/marca/motos-beto-compartir.png',
+  width: 1200,
+  height: 630,
+  alt: 'Motos Beto',
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -61,8 +70,16 @@ export const metadata: Metadata = {
     siteName: negocio.nombre,
     title: tituloRedes,
     description: descripcion,
+    images: [imagenCompartir],
   },
-  twitter: { card: 'summary', title: tituloRedes, description: descripcion },
+  twitter: {
+    // Con imagen de 1200×630, la tarjeta grande: el enlace del negocio circula
+    // sobre todo por WhatsApp, y ahí una miniatura chica se pierde.
+    card: 'summary_large_image',
+    title: tituloRedes,
+    description: descripcion,
+    images: [imagenCompartir],
+  },
   robots: {
     index: true,
     follow: true,

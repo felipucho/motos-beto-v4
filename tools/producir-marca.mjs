@@ -65,6 +65,19 @@ const PIEZAS = [
     moto: TINTAS.naranja,
     ocupacion: 0.86,
   },
+  {
+    salida: 'public/marca/motos-beto-compartir.png',
+    recorte: 'todo',
+    // 1200×630 es la caja que piden Open Graph y Twitter, y la que recorta
+    // WhatsApp —que para este negocio es el canal real— sin comerse los bordes.
+    lienzo: { w: 1200, h: 630 },
+    fondo: TINTAS.papelAlto,
+    palabra: TINTAS.tinta,
+    moto: TINTAS.naranja,
+    // La marca es apaisada (5,9:1): al 62% del ancho queda con aire arriba y
+    // abajo, que es como se ve en una miniatura de chat.
+    ocupacion: 0.62,
+  },
 ];
 
 const b64 = fs.readFileSync(ORIGEN).toString('base64');
@@ -177,21 +190,23 @@ const resultados = await pag.evaluate(
       const separado = separar(rec, p.palabra, p.moto, p.recorte === 'moto');
 
       let fin;
-      if (p.cuadrado) {
+      // `cuadrado` es el caso particular de `lienzo` con los dos lados iguales.
+      const lienzo = p.lienzo ?? (p.cuadrado ? { w: p.cuadrado, h: p.cuadrado } : null);
+      if (lienzo) {
         fin = document.createElement('canvas');
-        fin.width = p.cuadrado;
-        fin.height = p.cuadrado;
+        fin.width = lienzo.w;
+        fin.height = lienzo.h;
         const g = fin.getContext('2d');
         g.fillStyle = p.fondo;
-        g.fillRect(0, 0, p.cuadrado, p.cuadrado);
-        const anchoMoto = Math.round(p.cuadrado * p.ocupacion);
+        g.fillRect(0, 0, lienzo.w, lienzo.h);
+        const anchoMoto = Math.round(lienzo.w * p.ocupacion);
         const altoMoto = Math.round((separado.height * anchoMoto) / separado.width);
         g.imageSmoothingEnabled = true;
         g.imageSmoothingQuality = 'high';
         g.drawImage(
           separado,
-          Math.round((p.cuadrado - anchoMoto) / 2),
-          Math.round((p.cuadrado - altoMoto) / 2),
+          Math.round((lienzo.w - anchoMoto) / 2),
+          Math.round((lienzo.h - altoMoto) / 2),
           anchoMoto,
           altoMoto,
         );

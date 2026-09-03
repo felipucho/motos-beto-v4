@@ -15,19 +15,31 @@ import { siteUrl } from '@/lib/site';
  * 2019 no producen estrellas en el resultado. Las que cuentan son las de la
  * ficha, escritas por clientes.
  */
+/** Identidades estables de las entidades del grafo. Se referencian entre sí. */
+const ID = {
+  negocio: `${siteUrl}/#business`,
+  sitio: `${siteUrl}/#website`,
+  pagina: `${siteUrl}/#webpage`,
+  imagen: `${siteUrl}/#imagen`,
+};
+
 export function DatosEstructurados() {
-  const datos = {
-    '@context': 'https://schema.org',
+  const local = {
     // Dos tipos, porque son dos rubros reales bajo el mismo techo: motos
     // desde hace más de 25 años y bicicletas desde hace 10.
+    //
+    // `MotorcycleDealer` es descendiente de `AutoDealer` en el vocabulario, así
+    // que decir el hijo dice también al padre: declarar los dos sería ruido, y
+    // quedarse con `AutoDealer` sería perder precisión —acá no se venden autos.
     '@type': ['MotorcycleDealer', 'BikeStore'],
-    '@id': `${siteUrl}/#negocio`,
+    '@id': ID.negocio,
     name: negocio.nombre,
     description:
       'Venta de motos y bicicletas, repuestos, accesorios y taller propio en Las Varillas, Córdoba. Subagentes multimarca, con gestoría y financiación en cuotas.',
     url: siteUrl,
     telephone: negocio.telefonoLink.replace('tel:', ''),
     logo: `${siteUrl}/marca/motos-beto-tinta.png`,
+    image: { '@id': ID.imagen },
     address: {
       '@type': 'PostalAddress',
       streetAddress: direccion.calle,
@@ -68,6 +80,68 @@ export function DatosEstructurados() {
     ],
     hasMap: negocio.mapaLink,
     sameAs: [negocio.instagramLink, negocio.mapaLink],
+    // Las dos vías por las que el negocio atiende de verdad. El WhatsApp lleva
+    // el mismo número que el teléfono; `contactType` dice para qué sirve cada
+    // una en el vocabulario que Google lee.
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        telephone: negocio.telefonoLink.replace('tel:', ''),
+        availableLanguage: 'Spanish',
+        areaServed: 'AR',
+      },
+      {
+        '@type': 'ContactPoint',
+        contactType: 'sales',
+        telephone: negocio.whatsappTexto.replace(/[^\d+]/g, ''),
+        url: negocio.whatsappLink,
+        availableLanguage: 'Spanish',
+        areaServed: 'AR',
+      },
+    ],
+  };
+
+  /**
+   * El sitio como obra, separado del negocio que lo publica. Es lo que permite
+   * que una respuesta generada distinga "la página" del "comercio".
+   */
+  const sitio = {
+    '@type': 'WebSite',
+    '@id': ID.sitio,
+    url: siteUrl,
+    name: negocio.nombre,
+    inLanguage: 'es-AR',
+    publisher: { '@id': ID.negocio },
+  };
+
+  /** La portada, que es la única página que hoy tiene el sitio. */
+  const pagina = {
+    '@type': 'WebPage',
+    '@id': ID.pagina,
+    url: `${siteUrl}/`,
+    name: negocio.nombre,
+    isPartOf: { '@id': ID.sitio },
+    about: { '@id': ID.negocio },
+    primaryImageOfPage: { '@id': ID.imagen },
+    inLanguage: 'es-AR',
+  };
+
+  const imagen = {
+    '@type': 'ImageObject',
+    '@id': ID.imagen,
+    url: `${siteUrl}/marca/motos-beto-compartir.png`,
+    width: 1200,
+    height: 630,
+    caption: negocio.nombre,
+  };
+
+  // Un solo bloque con las cuatro entidades enlazadas por `@id`, en vez de
+  // cuatro scripts sueltos: así el grafo se lee de una sola vez y no hay que
+  // deducir qué se refiere a qué.
+  const datos = {
+    '@context': 'https://schema.org',
+    '@graph': [local, sitio, pagina, imagen],
   };
 
   return (

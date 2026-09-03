@@ -38,6 +38,9 @@ Todo lo verificable en el build está en orden.
 | CLS | 0 |
 | Imágenes sin `alt` | Ninguna |
 | Encabezados | Un solo `h1`, jerarquía sin saltos |
+| Open Graph | Completo, con imagen propia de 1200×630 |
+| Landmarks | `header`, `nav` rotulado, `main`, seis `section` con `id`, `address`, `footer` |
+| Accesibilidad | 0 violaciones de axe en escritorio y teléfono |
 
 El `h1` es el activo más fuerte de la página: dice **Motos / Bicicletas /
 Repuestos / en Las Varillas**. Rubro y pueblo, en el elemento que más pesa, sin
@@ -45,32 +48,105 @@ sonar a relleno de keywords porque es literalmente el cartel del negocio.
 
 ### Datos estructurados
 
-El marcado JSON-LD declara `MotorcycleDealer` + `BikeStore` con dirección,
-coordenadas, teléfono, horarios día por día (mañana y tarde separadas),
-`areaServed`, `sameAs` a Instagram, `hasMap` y un catálogo con las cinco marcas
-—Honda, Yamaha, Guerrero, Corven, CF Moto— y los servicios del taller.
+El JSON-LD es un `@graph` con cuatro entidades enlazadas por `@id`, en un solo
+bloque:
 
-Es más completo que el de la mayoría de los comercios del rubro. Declara además
-`priceRange: '$'` y `currenciesAccepted: 'ARS'`. El rango lo eligió el dueño: es
-una banda en la escala de uno a cuatro símbolos que usa Google, no un precio, así
-que ubica al negocio frente al resto del rubro sin comprometer ningún número.
+| `@id` | Tipo | Qué dice |
+| --- | --- | --- |
+| `#business` | `MotorcycleDealer` + `BikeStore` | El comercio |
+| `#website` | `WebSite` | El sitio, publicado por `#business` |
+| `#webpage` | `WebPage` | La portada, que trata sobre `#business` |
+| `#imagen` | `ImageObject` | La imagen de la marca, usada por las otras dos |
+
+Separar el negocio del sitio importa para las respuestas generadas: deja decir
+"el comercio abre a las 8:30" sin confundirlo con "la página". Las referencias
+se validaron: cinco enlaces internos, ninguno roto.
+
+`#business` declara dirección, coordenadas, teléfono, horarios día por día
+(mañana y tarde separadas), `areaServed`, `sameAs` a Instagram y a la ficha,
+`hasMap`, `priceRange`, `currenciesAccepted`, `paymentAccepted`, dos
+`contactPoint` —el fijo como *customer service*, el WhatsApp como *sales*— y un
+catálogo con las cinco marcas de moto, las dos de bicicleta y los servicios del
+taller.
+
+**Sobre `AutoDealer`:** no se usa a propósito. `MotorcycleDealer` desciende de
+`AutoDealer` en el vocabulario, así que declarar el hijo ya dice el padre.
+Poner los dos sería ruido, y quedarse sólo con `AutoDealer` sería perder
+precisión: acá no se venden autos.
+
+El `priceRange` es `'$'`, la banda que eligió el dueño en la escala de uno a
+cuatro símbolos de Google. Es una franja, no un precio.
 
 **No se declara `aggregateRating` ni `review`, y no se va a declarar.** Las
 reseñas propias autopublicadas en el marcado están explícitamente prohibidas por
 Google para negocios locales, y desde 2019 no generan estrellas en el resultado.
 Las reseñas que cuentan son las de la ficha de Google, escritas por clientes.
 
+### Para agentes y modelos de lenguaje
+
+Tres registros de la misma información, los tres generados desde
+`data/negocio.js`, así que no pueden contradecirse:
+
+| Recurso | Para quién |
+| --- | --- |
+| El HTML, con su `@graph` | Buscadores y personas |
+| `/llms.txt` | Modelos que leen texto plano y citan |
+| `/data/negocio.json` | Agentes que prefieren campos con nombre |
+
+`/robots.txt` nombra uno por uno a GPTBot, ChatGPT-User, OAI-SearchBot,
+ClaudeBot, Claude-User, Claude-SearchBot, PerplexityBot, Perplexity-User y
+Google-Extended. La regla `*` ya los alcanzaba, pero varios buscan su nombre
+antes que el comodín, y `Google-Extended` es la que separa el uso en respuestas
+generadas del índice de búsqueda: sin esa línea el sitio puede salir en los
+resultados y quedar afuera de las respuestas.
+
+Los dos recursos de texto declaran además **lo que el sitio no publica**
+—precios, coeficientes, catálogo por modelo, stock—. Decirlo explícito es una
+defensa: un hueco sin nombrar es una invitación a que un modelo lo complete por
+su cuenta.
+
 ### Rendimiento
 
-Medido en el servidor de desarrollo, que es más lento que producción por el
-recompilado en caliente:
+Medido sobre el build de producción servido localmente:
 
-- LCP 1,94 s · FCP 1,88 s · CLS 0 · TTFB 5 ms
-- 16 peticiones, 2 fuentes, 1 imagen
+| | |
+| --- | --- |
+| Peticiones | 13 |
+| HTML | 16 kB (gzip) |
+| JavaScript | 148 kB en 8 archivos |
+| Fuentes | 122 kB en 2 archivos |
+| CSS | 7 kB |
+| CLS | 0 |
+| TTFB | 5 ms |
 
-En producción baja bastante. Las cifras que van a importar son las de campo, y
-sólo se pueden medir con el sitio publicado, en
+Las fuentes son el rubro más pesado —88 kB de Archivo variable con eje de
+ancho, 34 kB de Bitter—. Se podría recortar fijando pesos concretos en vez de
+la familia variable, pero el titular de portada usa el eje de ancho a 76 y los
+rótulos el peso 700: recortarlo cambia el diseño, así que se dejó.
+
+Todo lo estático se sirve con `immutable` a un año; el HTML, comprimido.
+
+Las cifras que van a decidir el ranking son las de campo, y sólo se pueden
+medir con el sitio publicado, en
 [PageSpeed Insights](https://pagespeed.web.dev/).
+
+### Por qué no hay catálogo por modelo
+
+Una estructura `/motos/honda/xr190l/` con ficha técnica, precio y
+disponibilidad sería lo correcto para un concesionario. **Acá no se puede
+construir sin inventar.** `data/negocio.js` tiene las cinco marcas y dos
+categorías —"110 de calle", "enduro"—, y nada más: no hay modelos, ni
+cilindradas, ni precios, ni stock. El dueño decidió no publicar los
+coeficientes porque cambian seguido, y un porcentaje viejo en una página
+estática es una discusión en el mostrador.
+
+Crear esas rutas hoy daría páginas casi vacías. Google llama *thin content* a
+eso y lo trata como un problema de calidad del sitio entero, no de esas páginas
+sueltas: sería peor que no tenerlas.
+
+Cuando existan los datos —modelos con foto, ficha y precio— la estructura entra
+sin rehacer nada: `data/negocio.js` ya es la fuente única, el sitemap se genera
+por código y el `@graph` acepta nodos `Product` colgando de `#business`.
 
 ## Lo que se corrigió
 
@@ -95,6 +171,18 @@ Los dos `alt="Motos Beto"` del encabezado y el pie se revisaron y **se dejaron
 como estaban**: son el logo del negocio, y para un logo el nombre de la marca
 es la descripción correcta. En el encabezado además hace de texto del enlace al
 inicio, donde "Motos Beto" es exactamente lo que corresponde leer.
+
+**No había imagen para compartir.** El enlace mandado por WhatsApp —que es el
+canal real de este negocio— salía como una línea de texto sin miniatura.
+`tools/producir-marca.mjs` produce ahora una pieza de 1200×630 desde el mismo
+original que el resto de la marca, y la tarjeta de Twitter pasó de `summary` a
+`summary_large_image`.
+
+**El JSON-LD era un nodo suelto.** Pasó a ser un `@graph` de cuatro entidades
+enlazadas, con `contactPoint` para el fijo y el WhatsApp.
+
+**Se agregó `/data/negocio.json`,** que es el tercer registro de los mismos
+datos, generado desde la misma fuente y enlazado desde `llms.txt`.
 
 ## Lo que falta, y no es código
 
