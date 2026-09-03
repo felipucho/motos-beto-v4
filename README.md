@@ -76,10 +76,14 @@ están fijadas, así que la foto entra sin mover el resto del layout.
 
 ## Antes de publicar
 
-1. **Definir `NEXT_PUBLIC_SITE_URL`** en Vercel, con el dominio real y sin
-   barra final (`https://motosbeto.com.ar`). Sin esa variable el sitemap, el
-   `robots.txt`, la URL canónica y el marcado `LocalBusiness` apuntan a
-   `localhost` y el SEO no sirve para nada.
+1. **Definir `NEXT_PUBLIC_SITE_URL`** en Vercel el día que haya dominio propio,
+   con la dirección real y sin barra final (`https://motosbeto.com.ar`). Mientras
+   no exista, no hace falta tocar nada: `src/lib/site.ts` resuelve la URL sola
+   —primero esa variable, después la que Vercel inyecta en el build, y como
+   último recurso la dirección publicada hoy—, así que un build de producción
+   nunca emite `localhost` en el sitemap, el `robots.txt`, la canónica ni el
+   marcado `LocalBusiness`. Sí hay que definirla al mudarse de dominio: es lo
+   que evita que la canónica siga apuntando a la dirección vieja.
 2. **Reconfirmar el horario de la tarde con el dueño.** `data/negocio.js` dice
    `15:30 a 19:30`; la bio de Instagram dice `16:00 a 20:00`. Se publicó el
    primero por decisión del usuario, pero el dato conviene chequearlo.
@@ -140,6 +144,9 @@ src/lib/texto.ts         Enumerar listas como las escribe una persona
 src/lib/fotos.ts         Registro de fotos disponibles
 src/lib/site.ts          URL pública del sitio
 src/app/layout.tsx       Tipografías, metadatos, contrato de dirección
+src/app/robots.ts        robots.txt, con los rastreadores de IA nombrados
+src/app/sitemap.ts       sitemap.xml
+src/app/llms.txt/        El negocio en markdown plano, para modelos
 src/app/globals.css      Sistema de diseño: primitivas, roles, componentes
 src/app/page.tsx         Composición de la página
 src/components/          Secciones y piezas compartidas
