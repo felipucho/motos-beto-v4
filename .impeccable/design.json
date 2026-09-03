@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-02T00:00:00.000Z",
+  "title": "Design System: Motos Beto",
+  "extensions": {
+    "colorMeta": {
+      "naranja": {
+        "role": "primary",
+        "displayName": "Naranja quemado",
+        "canonical": "oklch(50% 0.155 42)",
+        "tonalRamp": [
+          "oklch(24% 0.09 42)",
+          "oklch(34% 0.12 42)",
+          "oklch(42% 0.14 42)",
+          "oklch(50% 0.155 42)",
+          "oklch(60% 0.15 42)",
+          "oklch(71% 0.13 42)",
+          "oklch(84% 0.08 42)",
+          "oklch(94% 0.03 42)"
+        ]
+      },
+      "naranja-vivo": {
+        "role": "accent",
+        "displayName": "Naranja vivo",
+        "canonical": "oklch(65% 0.145 45)",
+        "tonalRamp": [
+          "oklch(30% 0.10 45)",
+          "oklch(42% 0.13 45)",
+          "oklch(53% 0.145 45)",
+          "oklch(65% 0.145 45)",
+          "oklch(74% 0.125 45)",
+          "oklch(83% 0.09 45)",
+          "oklch(90% 0.055 45)",
+          "oklch(96% 0.02 45)"
+        ]
+      },
+      "tinta": {
+        "role": "neutral-strong",
+        "displayName": "Tinta cálida",
+        "canonical": "oklch(18% 0.008 70)",
+        "tonalRamp": [
+          "oklch(13% 0.008 70)",
+          "oklch(18% 0.008 70)",
+          "oklch(26% 0.008 70)",
+          "oklch(35% 0.008 70)",
+          "oklch(47% 0.008 70)",
+          "oklch(62% 0.008 70)",
+          "oklch(80% 0.006 70)",
+          "oklch(93% 0.004 70)"
+        ]
+      },
+      "gris-plano": {
+        "role": "neutral",
+        "displayName": "Gris de plano",
+        "canonical": "oklch(80% 0.011 80)",
+        "tonalRamp": []
+      },
+      "papel": {
+        "role": "surface",
+        "displayName": "Papel",
+        "canonical": "oklch(92.5% 0.007 80)",
+        "tonalRamp": []
+      }
+    },
+    "semanticRoles": {
+      "plano": "papel",
+      "plano-alto": "papel-alto",
+      "plano-gris": "gris-plano",
+      "plano-naranja": "naranja",
+      "plano-tinta": "tinta",
+      "texto": "tinta",
+      "texto-medio": "tinta-media",
+      "texto-suave": "tinta-gris",
+      "texto-claro": "papel-alto",
+      "texto-claro-suave": "papel-suave",
+      "regla": "tinta",
+      "regla-suave": "gris-plano",
+      "regla-clara": "papel-suave",
+      "accion": "naranja",
+      "accion-honda": "naranja-hondo",
+      "accion-texto": "papel-alto"
+    },
+    "typographyMeta": {
+      "placa": {
+        "displayName": "Chapa",
+        "purpose": "La cifra de la dirección, y nada más. Un uso en todo el sitio. Pasa a propósito el techo de 6rem del piso de calidad: no es un titular, es un número pintado en la vereda."
+      },
+      "t1": {
+        "displayName": "Apilado de portada",
+        "purpose": "El h1, en tres líneas de una palabra con interlínea 0.86. Uno por documento."
+      },
+      "t2": {
+        "displayName": "Titular de hoja",
+        "purpose": "Todo h2, y la tira de marcas. Nunca lleva un rótulo encima."
+      },
+      "t3": {
+        "displayName": "Subtitular y cifra",
+        "purpose": "La línea fuerte dentro de una hoja, las cifras de la franja y los valores de contacto."
+      },
+      "guia": {
+        "displayName": "Frase de entrada",
+        "purpose": "La única frase de texto que sigue al titular de cada hoja."
+      },
+      "rotulo": {
+        "displayName": "Rótulo",
+        "purpose": "La letra chica del pie del afiche: etiqueta de dato, navegación y botones. Nunca anuncia un titular."
+      },
+      "cuerpo": {
+        "displayName": "Cuerpo",
+        "purpose": "Texto de lectura en Bitter. El cartel no baja a este cuerpo."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-pasada",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "La única curva del sitio. Arranca rápido y se frena contra el marco, como la manguera de serigrafía."
+      },
+      {
+        "name": "pasada",
+        "value": "clip-path: inset(0 100% 0 0) → inset(0 0 0 0), 780ms",
+        "purpose": "El único momento autorizado: la tinta se asienta de izquierda a derecha. Corre al cargar, sobre la chapa de la portada."
+      },
+      {
+        "name": "pasada-reloj",
+        "value": "transform: scaleX(0) → scaleX(1), 820ms",
+        "purpose": "El mismo gesto en las barras del reloj al entrar en pantalla. Sólo crecen las barras, que son la parte redundante; los días, la escala y las pistas nacen puestos."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "24rem"
+      },
+      {
+        "name": "sm",
+        "value": "40rem"
+      },
+      {
+        "name": "md",
+        "value": "48rem"
+      },
+      {
+        "name": "lg",
+        "value": "64rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Acción naranja",
+      "kind": "button",
+      "refersTo": "accion-naranja",
+      "description": "La acción primaria: un plano de naranja con el texto en papel. Cuadrada, sin radio, sin sombra.",
+      "html": "<a href=\"#\" style=\"display:inline-flex;align-items:center;justify-content:center;gap:.625rem;min-height:3.25rem;padding:.75rem 1.5rem;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-weight:700;font-stretch:100%;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:0;background:#b84610;color:#f5f3ef;\">Escribinos</a>"
+    },
+    {
+      "name": "Acción tinta",
+      "kind": "button",
+      "refersTo": "accion-tinta",
+      "description": "La primaria cuando el plano de abajo ya es naranja.",
+      "html": "<a href=\"#\" style=\"display:inline-flex;align-items:center;justify-content:center;gap:.625rem;min-height:3.25rem;padding:.75rem 1.5rem;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-weight:700;font-stretch:100%;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:0;background:#191713;color:#f5f3ef;\">Ir al inicio</a>"
+    },
+    {
+      "name": "Acción de contorno",
+      "kind": "button",
+      "refersTo": "accion-contorno",
+      "description": "Caja de 2px de tinta sobre plano claro. Al pasar por encima se rellena de tinta.",
+      "html": "<a href=\"#\" style=\"display:inline-flex;align-items:center;justify-content:center;gap:.625rem;min-height:3.25rem;padding:.75rem 1.5rem;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-weight:700;font-stretch:100%;font-size:.8125rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-radius:0;background:transparent;color:#191713;border:2px solid #191713;\">Cómo llegar</a>"
+    },
+    {
+      "name": "Marbete",
+      "kind": "chip",
+      "refersTo": "marbete",
+      "description": "La etiqueta del estante: marco de 2px y esquina viva, porque no es accionable.",
+      "html": "<span style=\"display:inline-block;border:2px solid #191713;border-radius:0;padding:.5rem .75rem;color:#191713;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2\">Frenos</span>"
+    },
+    {
+      "name": "Marca de estado",
+      "kind": "indicator",
+      "refersTo": "marca-estado",
+      "description": "Abierto es un cuadrado lleno; cerrado es un cuadrado vacío cruzado en diagonal. Se lee sin distinguir el color.",
+      "html": "<span style=\"display:inline-flex;align-items:center;gap:.625rem;color:#191713;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:1rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase\"><span style=\"display:inline-block;width:.78em;height:.78em;border:2px solid currentColor;background:currentColor\"></span>Abierto ahora · cierra 19:30</span>"
+    },
+    {
+      "name": "Chapa de dirección",
+      "kind": "panel",
+      "refersTo": "plano-naranja",
+      "description": "El número puesto como monumento y no como renglón, apoyado en el pie del plano con su calle encima. Toda la chapa es el enlace al mapa.",
+      "html": "<a href=\"#\" style=\"display:flex;flex-direction:column;justify-content:flex-end;background:#b84610;color:#f5f3ef;padding:3.5rem 3rem;min-height:22rem;text-decoration:none\"><span style=\"font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2\">B. Mitre</span><span style=\"font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-weight:900;font-stretch:76%;font-size:8rem;line-height:.78;letter-spacing:-.012em;margin-top:.25rem\">310</span><span style=\"border-top:2px solid #f5f3ef;margin-top:1.5rem;padding-top:1rem;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2\">Las Varillas · Córdoba</span></a>"
+    },
+    {
+      "name": "Franja",
+      "kind": "bar",
+      "refersTo": "plano-tinta",
+      "description": "La banda de tinta del pie del cartel: tres celdas divididas por reglas de 2px. La del medio es más ancha porque lleva el horario entero.",
+      "html": "<ul style=\"display:grid;grid-template-columns:.85fr 1.3fr .85fr;background:#191713;color:#f5f3ef;margin:0;padding:0 2rem;list-style:none\"><li style=\"padding:1.75rem 2rem 1.75rem 0\"><span style=\"display:block;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2;color:#b9b3a8\">Estado</span><span style=\"display:block;margin-top:.625rem;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:1rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase\">Abierto ahora</span></li><li style=\"border-left:2px solid #4a473f;padding:1.75rem 2rem\"><span style=\"display:block;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2;color:#b9b3a8\">Hoy miércoles</span><span style=\"display:block;margin-top:.625rem;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:1.875rem;font-weight:700;font-variant-numeric:tabular-nums;text-wrap:balance\">8:30 a 12:30 hs y 15:30 a 19:30 hs</span></li><li style=\"border-left:2px solid #4a473f;padding:1.75rem 0 1.75rem 2rem\"><span style=\"display:block;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2;color:#b9b3a8\">Teléfono</span><span style=\"display:block;margin-top:.625rem;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:1.875rem;font-weight:700;font-variant-numeric:tabular-nums\">(03533) 68-9287</span></li></ul>"
+    },
+    {
+      "name": "Tira de marcas",
+      "kind": "list",
+      "refersTo": "tira-marcas",
+      "description": "Las marcas al cuerpo del titular, entre dos reglas de 3px y a ancho completo: en un local del rubro están pintadas en el frente, no listadas en una tabla.",
+      "html": "<ul style=\"display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem 2rem;border-top:3px solid #191713;border-bottom:3px solid #191713;padding:1.75rem 0;margin:0;list-style:none;background:#eae7e1\"><li style=\"font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-weight:900;font-stretch:76%;font-size:4.5rem;line-height:.9;letter-spacing:-.012em;word-spacing:.08em;text-transform:uppercase;color:#b84610\">Honda</li><li style=\"font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-weight:900;font-stretch:76%;font-size:4.5rem;line-height:.9;letter-spacing:-.012em;text-transform:uppercase;color:#b84610\">Yamaha</li></ul>"
+    },
+    {
+      "name": "Fila de ficha",
+      "kind": "list",
+      "refersTo": "fila-ficha",
+      "description": "Rótulo angosto a la izquierda, frase a la derecha, regla de 2px entre filas. Reemplaza a la grilla de tarjetas iguales.",
+      "html": "<dl style=\"margin:0;background:#eae7e1\"><div style=\"display:grid;grid-template-columns:11rem 1fr;gap:0 2.5rem;border-top:2px solid #c7c1b6;padding:1.25rem 0\"><dt style=\"font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2;color:#65615a;padding-top:.375rem\">Cubiertas</dt><dd style=\"margin:0;font-family:Bitter,Georgia,serif;font-size:1.0625rem;line-height:1.62;color:#191713\">Pirelli, Rinaldi y opciones económicas.</dd></div></dl>"
+    },
+    {
+      "name": "Reloj de la semana",
+      "kind": "chart",
+      "refersTo": "reloj",
+      "description": "La semana como franjas de tinta sobre plano oscuro. La fila de hoy sube su pista y lleva la aguja de la hora coronada por un triángulo.",
+      "html": "<div style=\"background:#191713;padding:2rem\" aria-hidden=\"true\"><div style=\"display:grid;grid-template-columns:2.75rem 1fr;align-items:center;gap:.875rem;padding:.3125rem 0\"><span style=\"text-align:right;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2;color:#b9b3a8\">Lun</span><span style=\"position:relative;display:block;height:1.0625rem;background:#4a473f\"><span style=\"position:absolute;top:0;bottom:0;left:4%;width:33%;background:#e8763a\"></span><span style=\"position:absolute;top:0;bottom:0;left:62%;width:33%;background:#e8763a\"></span></span></div><div style=\"display:grid;grid-template-columns:2.75rem 1fr;align-items:center;gap:.875rem;padding:.3125rem 0\"><span style=\"text-align:right;font-family:Archivo,'Arial Narrow',system-ui,sans-serif;font-size:.75rem;font-weight:700;font-stretch:100%;letter-spacing:.14em;text-transform:uppercase;line-height:1.2;color:#f5f3ef\">Mié</span><span style=\"position:relative;display:block;height:1.0625rem;background:#65615a\"><span style=\"position:absolute;top:0;bottom:0;left:4%;width:33%;background:#e8763a\"></span><span style=\"position:absolute;top:0;bottom:0;left:62%;width:33%;background:#e8763a\"></span><span style=\"position:absolute;top:-.25rem;bottom:-.25rem;left:48%;width:2px;background:#f5f3ef\"></span></span></div></div>"
+    },
+    {
+      "name": "Marca",
+      "kind": "logo",
+      "refersTo": "marca",
+      "description": "El logo real del negocio, separado a las tintas del sitio. Relación 6,30:1. Dos piezas —una por familia de plano— y el favicon. Se regeneran desde marca/origen.png con tools/producir-marca.mjs; no se editan a mano.",
+      "html": "<div style=\"background:#191713;padding:2.5rem\"><img src=\"/marca/motos-beto-papel.png\" alt=\"Motos Beto\" style=\"height:4rem;width:auto;display:block\"></div>"
+    }
+  ],
+  "narrative": {
+    "northStar": "Un afiche serigrafiado de mostrador.",
+    "overview": "Cada sección es una hoja impresa de una sola tinta y el corte entre un plano y el siguiente es todo el separador que hace falta. Cuatro pasadas —naranja quemado, tinta cálida, gris y el papel, que también cuenta porque es lo que queda sin imprimir—, ni un degradado, ni una sombra, ni una esquina redondeada. La voz de cartel es Archivo (Omnibus-Type) a peso 900 y ancho 76; el texto es Bitter (Huerta Tipográfica), una egipcia de remates rectos y mecánicos, que es lo que separa este mundo del afiche turístico de parque del que salió.",
+    "keyCharacteristics": [
+      "Planos de tinta a sangre completa, apilados, sin contenedor visible ni tarjeta.",
+      "Radio cero en todo el sitio; reglas de 3px y 2px, nunca de un pelo.",
+      "Cero sombras y cero degradados: la profundidad se declara una sola vez y es un borde.",
+      "Jerarquía por tamaño, con un salto brusco entre el titular y la letra chica.",
+      "El naranja ocupa alrededor de un cuarto de la página, siempre en campos grandes.",
+      "El estado de apertura se lee como marca —cuadrado lleno o cruzado—, nunca como color.",
+      "Un solo gesto de movimiento, la pasada, y nunca tapa información."
+    ],
+    "rules": [
+      {
+        "name": "La regla del plano",
+        "body": "Toda sección nueva es un plano entero de una de las cinco tintas de plano (papel, papel-alto, gris-plano, naranja, tinta), con .contenedor adentro y .pliego de alto. El cambio de plano separa; no se dibujan reglas entre secciones."
+      },
+      {
+        "name": "La regla de las dos tintas sobre naranja",
+        "body": "Sobre el plano naranja hay exactamente dos: papel-alto para el texto de lectura y tinta para las líneas grandes, de t3 para arriba. No hay gris intermedio, y la jerarquía la hace el tamaño."
+      },
+      {
+        "name": "La regla del anillo",
+        "body": "El anillo de foco lo elige el plano a través de --anillo: tinta por defecto, naranja-vivo sobre plano de tinta, papel-alto sobre plano naranja. Siempre 3px, siempre con 3px de separación, siempre sin transición."
+      },
+      {
+        "name": "La regla del rótulo",
+        "body": "Los rótulos etiquetan datos —una celda, un dt, una columna—. Ninguno va encima de un titular: el titular se sostiene solo."
+      },
+      {
+        "name": "La regla de la línea con cuerpo",
+        "body": "Las reglas son de 3px cuando separan estructura y de 2px cuando dividen adentro de un bloque. Una línea de imprenta tiene cuerpo; un pelo de 1px pertenece a otro mundo."
+      },
+      {
+        "name": "La regla del dato único",
+        "body": "Cada dato vive en un solo lugar. La dirección es la chapa; el horario de hoy es la franja y la semana es el reloj; el teléfono es la franja y la hoja de contacto."
+      },
+      {
+        "name": "La regla de la pasada",
+        "body": "Hay un solo gesto de movimiento y nunca esconde información. En el reloj crecen sólo las barras, que son redundantes con la tabla."
+      },
+      {
+        "name": "La regla del hueco vacío",
+        "body": "Sin foto, el hueco no dibuja nada. Un panel de relleno con un ícono adentro es un esqueleto de carga que nunca termina de cargar."
+      },
+      {
+        "name": "La regla de la cifra",
+        "body": "Toda cifra que se compare en columna va en la grotesca, con numerales tabulares y ancho 100%. La egipcia no alinea columnas de horario."
+      },
+      {
+        "name": "La regla de la marca única",
+        "body": "El logo del negocio vive en el encabezado y en el pie, y en ningún otro lado. No existe un logotipo tipográfico alternativo: un segundo wordmark compitiendo con el real serían dos marcas para el mismo negocio. Las piezas se separan a las tintas del sitio y se regeneran con el script, nunca se editan."
+      }
+    ],
+    "dos": [
+      "Do empezar toda sección nueva como un plano a sangre de una sola tinta, con .contenedor adentro y .pliego de alto.",
+      "Do dejar que el tamaño haga la jerarquía: el salto de t2 a dato es la herramienta principal.",
+      "Do encabezar cada hoja con un titular que se sostenga solo y una sola frase debajo.",
+      "Do escribir toda cifra con su medida pegada.",
+      "Do entintar los cromos del navegador: selección, cursor, accent-color, barra de desplazamiento, subrayado.",
+      "Do medir el contraste contra el plano concreto antes de elegir un color de texto."
+    ],
+    "donts": [
+      "Don't usar tarjetas, ni una grilla de ícono + título + texto: es como el rubro disimula que tiene poco que mostrar.",
+      "Don't poner un rótulo encima de un titular.",
+      "Don't agregar radios, sombras, desenfoques ni degradados, en ningún estado.",
+      "Don't usar reglas de 1px.",
+      "Don't poner texto chico en naranja sobre papel, ni papel-suave sobre naranja.",
+      "Don't usar un punto de color para el estado de apertura.",
+      "Don't cubrir un plano con una trama de puntos ni con grano: se probó un medio tono en el bloque de pagos y a tamaño de pantalla se leía como ruido de render, no como una pasada de imprenta.",
+      "Don't esconder contenido esperando el scroll.",
+      "Don't sumar una quinta tinta: si entra un color, reemplaza a uno."
+    ],
+    "openDecisions": [
+      "Las fotos: los cuatro huecos están medidos —frente 4/3 en la chapa y tres bandas 21/9— y hoy no dibujan nada. Cuando lleguen entran sin mover una línea; la del frente se imprime en duotono.",
+      "typography.placa pasa el techo de 6rem del piso de calidad para tipografía de despliegue. Es una excepción consciente y única: no es un titular, es la cifra de una chapa de dirección.",
+      "El sobreimpreso —dos tintas cruzándose para dar una tercera— es el recurso nativo de una imprenta de dos pasadas y la página no lo usa. Se dejó afuera porque todos los lugares posibles eran decorado y no significado.",
+      "Los datos que faltan confirmar con el dueño siguen anotados en el README, en «Datos a confirmar»."
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+.env*.local
+.vercel
+.impeccable/config.local.json
+
+# Evidencia de revisión: se regenera con tools/capturar-revision.mjs
+.impeccable/review/
+
+# Ronda de decisión: efímera, muere con la sesión
+.impeccable/questions/
+
+# Salida de tools/probar-404.mjs cuando se corre sin carpeta
+undefined/
