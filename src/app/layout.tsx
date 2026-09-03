@@ -22,8 +22,12 @@ const bitter = Bitter({
   display: 'swap',
 });
 
-const titulo = 'Motos Beto';
-const tituloLargo = 'Motos Beto — Motos, bicicletas y repuestos en Las Varillas, Córdoba';
+// El `<title>` es la línea azul del resultado de Google, no sólo la pestaña:
+// tiene que nombrar el rubro y el pueblo, que es lo que la gente busca. Va la
+// versión larga, con el nombre adelante para que la pestaña —que corta cerca
+// del carácter 30— siga leyéndose "Motos Beto".
+const titulo = 'Motos Beto — Motos, bicicletas y repuestos en Las Varillas';
+const tituloRedes = 'Motos Beto — Motos, bicicletas y repuestos en Las Varillas, Córdoba';
 const descripcion =
   'Motos, bicicletas, repuestos y taller propio en B. Mitre 310, Las Varillas. Honda, Yamaha, Guerrero, Corven y CF Moto. Financiación en cuotas, gestoría y envíos.';
 
@@ -52,10 +56,10 @@ export const metadata: Metadata = {
     locale: 'es_AR',
     url: siteUrl,
     siteName: negocio.nombre,
-    title: tituloLargo,
+    title: tituloRedes,
     description: descripcion,
   },
-  twitter: { card: 'summary', title: tituloLargo, description: descripcion },
+  twitter: { card: 'summary', title: tituloRedes, description: descripcion },
   robots: {
     index: true,
     follow: true,
