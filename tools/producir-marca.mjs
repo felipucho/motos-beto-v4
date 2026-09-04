@@ -56,7 +56,11 @@ const PIEZAS = [
   {
     salida: 'src/app/icon.png',
     recorte: 'todo',
-    cuadrado: 256,
+    // Múltiplo de 48, que es lo que pide la guía de favicons de Google: el
+    // buscador lo baja a 48 px para ponerlo al lado del resultado. Antes eran
+    // 256, que no es múltiplo de nada de eso. 480 es 48×10 y además casi el
+    // doble del tamaño anterior, así que cumplir la guía no cuesta resolución.
+    cuadrado: 480,
     fondo: TINTAS.papelAlto,
     // El favicon se ve a 16 px sobre pestañas blancas: nombre y moto van en
     // las mismas tintas que el encabezado (planos claros), para que la pestaña

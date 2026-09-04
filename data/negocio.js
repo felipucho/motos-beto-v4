@@ -1,8 +1,46 @@
 // Datos del negocio. Fuente única para todo el sitio.
+
+const NOMBRE = 'Motos Beto';
+
+/**
+ * Las partes de la dirección, y la única vez que se escriben.
+ *
+ * De acá salen las cuatro formas que el sitio necesita: la línea que lee una
+ * persona, el `PostalAddress` del marcado, la consulta que se le pasa a Google
+ * Maps y el pie. Antes cada una estaba escrita a mano por separado, y esa es
+ * exactamente la forma en que una corrección deja media web apuntando a la
+ * dirección vieja: Google compara nombre, dirección y teléfono entre todas las
+ * fuentes del negocio, y dos direcciones distintas se leen como dos negocios.
+ *
+ * `codigoPostal` no es un dato nuevo ni inventado: es el que publica la ficha
+ * de Google del propio negocio —`RN158, X5940 Las Varillas`—, así que ponerlo
+ * acá acerca el marcado a lo que el negocio ya declara en su perfil.
+ *
+ * El país va en dos formas porque se leen distinto: `Argentina` es la que
+ * termina la línea escrita, `AR` la que pide schema.org.
+ */
+const DIRECCION = {
+  calle: 'B. Mitre 310',
+  localidad: 'Las Varillas',
+  provincia: 'Córdoba',
+  codigoPostal: 'X5940',
+  pais: 'Argentina',
+  paisIso: 'AR',
+};
+
+/**
+ * Lo que se le pasa a Google Maps para que caiga en la ficha del local y no en
+ * un punto suelto de la calle. Es el nombre más la dirección, sin el país:
+ * la misma cadena que antes estaba copiada en los tres enlaces de abajo.
+ */
+const CONSULTA_MAPA = `${NOMBRE}, ${DIRECCION.calle}, ${DIRECCION.localidad}, ${DIRECCION.provincia}`;
+
 export const negocio = {
-  nombre: 'Motos Beto',
+  nombre: NOMBRE,
   rubro: 'Motos, bicicletas y repuestos',
-  direccion: 'B. Mitre 310, Las Varillas, Córdoba, Argentina',
+  direccion: `${DIRECCION.calle}, ${DIRECCION.localidad}, ${DIRECCION.provincia}, ${DIRECCION.pais}`,
+  /** Las mismas partes, para el marcado y para el pie. */
+  partesDireccion: DIRECCION,
   telefonoTexto: '(03533) 68-9287',
   telefonoLink: 'tel:+543533689287',
   whatsappTexto: '+54 9 3533 68-9287',
@@ -34,21 +72,21 @@ export const negocio = {
   // Mapa centrado en el local, con el negocio marcado por nombre.
   mapaEmbed:
     'https://www.google.com/maps?q=' +
-    encodeURIComponent('Motos Beto, B. Mitre 310, Las Varillas, Córdoba') +
+    encodeURIComponent(CONSULTA_MAPA) +
     '&ll=-31.8769593,-62.7188429&z=17&hl=es&output=embed',
 
   // Ficha del negocio, en la forma que Google documenta para enlaces: nombre
   // más identificador de lugar. La abre igual el navegador y la aplicación.
   mapaLink:
     'https://www.google.com/maps/search/?api=1&query=' +
-    encodeURIComponent('Motos Beto, B. Mitre 310, Las Varillas, Córdoba') +
+    encodeURIComponent(CONSULTA_MAPA) +
     '&query_place_id=ChIJ-faAs29ky5URLnkn3AhElsY',
 
   // Cómo llegar, con el destino puesto en el negocio y no en un punto suelto:
   // así el destino aparece con nombre y no como un par de coordenadas.
   comoLlegarLink:
     'https://www.google.com/maps/dir/?api=1&destination=' +
-    encodeURIComponent('Motos Beto, B. Mitre 310, Las Varillas, Córdoba') +
+    encodeURIComponent(CONSULTA_MAPA) +
     '&destination_place_id=ChIJ-faAs29ky5URLnkn3AhElsY',
 
   /* ---------------------------------------------------------------------------
@@ -63,7 +101,13 @@ export const negocio = {
      --------------------------------------------------------------------------- */
 
   motos: {
-    condicion: 'Subagente multimarca: cinco marcas, ninguna en exclusiva.',
+    // Abre con el verbo, y no con "subagente multimarca", que es jerga de
+    // mostrador: la página entera daba por sabido que acá se venden motos sin
+    // decirlo nunca —la única vez que aparecía "vender" era la negación de los
+    // seguros—. El dato no cambia; se nombra la transacción que ya describe el
+    // marcado `MotorcycleDealer`. Esta línea es también la que leen `/llms.txt`
+    // y `/data/negocio.json`, así que los tres registros quedan parejos.
+    condicion: 'Venta de motos, subagente multimarca: cinco marcas, ninguna en exclusiva.',
     marcas: ['Honda', 'Yamaha', 'Guerrero', 'Corven', 'CF Moto'],
     masBuscadas: [
       { que: '110 de calle', detalle: 'Guerrero, Corven y Honda Wave.' },

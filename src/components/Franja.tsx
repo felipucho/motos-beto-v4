@@ -18,7 +18,15 @@ export function Franja() {
   const { hoy } = useEstadoApertura();
 
   const filaHoy = hoy === null ? null : DIAS[hoy];
-  const rotuloHorario = filaHoy ? `Hoy ${DIA_LARGO[filaHoy.indice]}` : 'Horario';
+  // Antes de hidratar no se sabe qué día es —el estado se calcula en el
+  // navegador, con la zona del negocio—, así que se rotula el grupo que se está
+  // mostrando en vez de un genérico. El HTML que se sirve (y el que rastrea
+  // Google) traía "Horario" encima del horario de lunes a viernes los siete
+  // días de la semana: sábado incluido, cuando el sábado cierra al mediodía.
+  // Con el rótulo del grupo, el par rótulo/horas dice la verdad en los dos
+  // estados. `dias` sale de `data/negocio.js` y es el mismo texto que imprime
+  // la tabla de Horarios: no se inventa nada.
+  const rotuloHorario = filaHoy ? `Hoy ${DIA_LARGO[filaHoy.indice]}` : negocio.horarios[0].dias;
   const textoHorario = filaHoy
     ? filaHoy.tramos.length > 0
       ? filaHoy.fila.horas

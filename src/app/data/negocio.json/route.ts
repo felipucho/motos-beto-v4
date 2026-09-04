@@ -32,6 +32,7 @@ export function GET() {
         calle: direccion.calle,
         localidad: direccion.localidad,
         provincia: direccion.provincia,
+        codigoPostal: direccion.codigoPostal,
         pais: direccion.pais,
       },
       coordenadas: negocio.coordenadas,

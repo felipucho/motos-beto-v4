@@ -20,10 +20,23 @@ cuando separa un original para las planchas que tiene.
 |---|---|---|
 | `motos-beto-tinta.png` | palabra `#191713`, moto `#b84610` | Planos claros: el encabezado |
 | `motos-beto-papel.png` | palabra `#f5f3ef`, moto `#e8763a` | Planos de tinta: el pie |
-| `../../src/app/icon.png` | moto `#e8763a` sobre cuadrado `#191713` | El favicon |
+| `motos-beto-compartir.png` | palabra `#191713`, moto `#b84610`, fondo `#f5f3ef` | La miniatura de WhatsApp y redes |
+| `../../src/app/icon.png` | palabra `#191713`, moto `#b84610`, fondo `#f5f3ef` | El favicon |
 
 Las dos primeras salen a 1600×254 (relación 6,30:1), que es más del doble del
-tamaño más grande al que se muestran. El favicon sale a 512×512.
+tamaño más grande al que se muestran.
+
+`motos-beto-compartir.png` sale a 1200×630, que es la caja que piden Open Graph
+y Twitter y la que recorta WhatsApp —el canal real de este negocio— sin comerse
+los bordes.
+
+El favicon sale a **480×480**. El número no es caprichoso: la guía de favicons
+de Google pide un cuadrado de lado múltiplo de 48, porque el buscador lo baja a
+48 px para ponerlo al lado del resultado. 480 es 48×10.
+
+El favicon **no** es la moto sola sobre un cuadrado oscuro: lleva el nombre y la
+moto en las tintas de los planos claros, sobre papel. Se ve a 16 px sobre
+pestañas blancas, y ahí un ícono suelto no dice de quién es la pestaña.
 
 ## Si cambia el logo
 

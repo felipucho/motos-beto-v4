@@ -45,6 +45,13 @@ export function DatosEstructurados() {
       streetAddress: direccion.calle,
       addressLocality: direccion.localidad,
       addressRegion: direccion.provincia,
+      // El código postal lo publica la ficha de Google del propio negocio
+      // —`RN158, X5940 Las Varillas`—, así que declararlo no agrega un dato
+      // nuevo: acerca el marcado a lo que el negocio ya dice de sí mismo. Es
+      // una de las pocas piezas de la dirección que se pueden hacer coincidir
+      // desde el código, y la coincidencia entre ficha y sitio es lo que el
+      // sitio puede aportar a la búsqueda local.
+      postalCode: direccion.codigoPostal,
       addressCountry: direccion.pais,
     },
     geo: {
@@ -147,9 +154,23 @@ export function DatosEstructurados() {
   return (
     <script
       type="application/ld+json"
-      // El JSON se construye acá, no llega de afuera: no hay entrada de usuario
-      // que pueda romper el script.
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(datos).replace(/</g, '\u003c') }}
+      /* El JSON se construye acá y no llega de afuera, así que hoy no hay
+         entrada de usuario que pueda romper el script. Aun así el `<` se escapa,
+         porque el que cierra la etiqueta no necesita venir de un atacante:
+         alcanza con que algún dato del negocio llegue a contener la secuencia
+         `</script`, y el navegador cortaría el bloque ahí sin avisar a nadie.
+
+         La forma importa, y antes estaba mal: la línea reemplazaba el carácter
+         `<` por sí mismo, porque la secuencia que tenía escrita como
+         reemplazo ya la lee JavaScript en el fuente como ese mismo carácter.
+         Era un no-op con aspecto de medida de seguridad, que es peor que no
+         tener nada: se lee como resuelto.
+
+         Lo que hay que emitir es la secuencia de escape literal —barra
+         invertida, u, 0, 0, 3, c—, que un parser de JSON vuelve a leer como
+         `<` y un parser de HTML no reconoce como apertura de etiqueta. De ahí
+         la barra invertida doble. */
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(datos).replace(/</g, '\\u003c') }}
     />
   );
 }

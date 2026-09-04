@@ -20,10 +20,16 @@ export function Portada() {
     <section className="bg-papel">
       <div className="lg:grid lg:grid-cols-[1.06fr_0.94fr] lg:items-stretch">
         <div className="margen-cartel py-14 md:py-20 lg:py-24">
+          {/* Los `{' '}` entre líneas no se ven: entre cajas de bloque el
+              espacio colapsa y no genera renglón. Están porque sin ellos el
+              texto del `h1` —lo que lee un extractor, y el `h1` es la señal más
+              fuerte de la página— salía `MotosBicicletasRepuestosen Las
+              Varillas`, cuatro palabras pegadas que no son ninguna palabra. El
+              afiche se ve exactamente igual; lo que cambia es lo que se lee. */}
           <h1 className="cartel text-t1 text-tinta">
-            <span className="block">Motos</span>
-            <span className="text-naranja block">Bicicletas</span>
-            <span className="block">Repuestos</span>
+            <span className="block">Motos</span>{' '}
+            <span className="text-naranja block">Bicicletas</span>{' '}
+            <span className="block">Repuestos</span>{' '}
             {/* La localidad no es parte del apilado: va a ancho normal y con
                 interletrado abierto, como el sello al pie de un afiche. */}
             <span className="text-t3 mt-5 block [font-stretch:100%] [word-spacing:normal] tracking-[0.05em]">

@@ -13,10 +13,24 @@ export type Detalle = {
   detalle: string;
 };
 
+/** Las partes de la dirección tal como las declara `data/negocio.js`. */
+export type PartesDireccion = {
+  calle: string;
+  localidad: string;
+  provincia: string;
+  /** El que publica la ficha de Google del negocio. */
+  codigoPostal: string;
+  /** Escrito, para la línea que lee una persona: "Argentina". */
+  pais: string;
+  /** ISO, que es lo que pide schema.org: "AR". */
+  paisIso: string;
+};
+
 export type Negocio = {
   nombre: string;
   rubro: string;
   direccion: string;
+  partesDireccion: PartesDireccion;
   telefonoTexto: string;
   telefonoLink: string;
   whatsappTexto: string;
@@ -72,10 +86,24 @@ export type Negocio = {
  */
 export const negocio: Negocio = datos;
 
-/** Partes de la dirección, para el marcado estructurado y el pie. */
+/**
+ * Partes de la dirección, para el marcado estructurado y el pie.
+ *
+ * Se derivan de `data/negocio.js` y no se escriben acá. Antes esta constante
+ * era una segunda copia a mano de la misma dirección, y alcanzaba con corregir
+ * una sola de las dos para que el sitio publicara dos direcciones distintas:
+ * la del marcado por un lado y la de la línea escrita por el otro. Para un
+ * negocio local esa es de las peores señales que se pueden emitir, porque
+ * Google contrasta la dirección del sitio con la de la ficha y con la de
+ * cualquier otra fuente, y una discrepancia se lee como dos comercios.
+ *
+ * `pais` queda en ISO —`AR`— porque es lo que consume el `PostalAddress`; la
+ * forma escrita vive en `partesDireccion.pais` y la usa la línea completa.
+ */
 export const direccion = {
-  calle: 'B. Mitre 310',
-  localidad: 'Las Varillas',
-  provincia: 'Córdoba',
-  pais: 'AR',
+  calle: datos.partesDireccion.calle,
+  localidad: datos.partesDireccion.localidad,
+  provincia: datos.partesDireccion.provincia,
+  codigoPostal: datos.partesDireccion.codigoPostal,
+  pais: datos.partesDireccion.paisIso,
 } as const;

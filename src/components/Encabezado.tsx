@@ -42,14 +42,29 @@ export function Encabezado() {
             —eso es el titular— y precargarla con prioridad alta le robaba ancho
             de banda a las tipografías, que sí deciden cuándo se puede leer el
             cartel. Va con `fetchPriority="high"` para que no quede al final de
-            la cola, pero sin ocupar la primera ranura. */}
-        <Link href="/" className="inline-block py-2 no-underline">
+            la cola, pero sin ocupar la primera ranura.
+
+            Sí lleva `loading="eager"`. `next/image` pone `loading="lazy"` a todo
+            lo que no sea `priority`, y una imagen diferida no la descubre el
+            escáner de precarga: espera al layout para saber si está cerca de la
+            pantalla. Esta está arriba de todo, siempre visible, así que la
+            demora es segura y el `fetchPriority="high"` que la acompañaba no
+            llegaba a hacer nada —no se puede priorizar un pedido que todavía no
+            existe—. `eager` sin `priority` es justo el punto medio que pide el
+            párrafo de arriba: se pide con el documento, sin `<link rel=preload>`
+            que le saque la ranura a las tipografías.
+
+            `prefetch={false}` porque este enlace apunta a `/`, que es la página
+            en la que ya estás: el router bajaba la carga RSC de la portada de
+            nuevo en cada visita, sin que nadie la use. */}
+        <Link href="/" prefetch={false} className="inline-block py-2 no-underline">
           <Image
             src="/marca/motos-beto-tinta.png"
             alt="Motos Beto"
             width={1600}
             height={254}
             fetchPriority="high"
+            loading="eager"
             // Se muestra a 32 px de alto en el teléfono y a 40 en el escritorio;
             // con la proporción de la pieza eso es 202 y 252 px de ancho. Decirlo
             // por separado evita que el teléfono baje la variante del escritorio.

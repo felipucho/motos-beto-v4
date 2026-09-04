@@ -22,8 +22,18 @@ import { siteUrl } from '@/lib/site';
  */
 export const dynamic = 'force-static';
 
+/**
+ * Una sección del documento: título, línea en blanco, filas, línea en blanco.
+ *
+ * El filtro descarta `false` y `undefined` —las filas condicionales— pero
+ * conserva la cadena vacía, que es un separador puesto a mano. Con
+ * `filter(Boolean)` la vacía también se caía, y el párrafo que sigue a la
+ * última lista quedaba pegado al renglón de arriba: en markdown eso lo absorbe
+ * como continuación del ítem de lista en vez de leerse como párrafo aparte.
+ */
 function seccion(titulo: string, filas: (string | false | undefined)[]): string {
-  return [`## ${titulo}`, '', ...filas.filter(Boolean), ''].join('\n');
+  const utiles = filas.filter((fila) => fila !== false && fila !== undefined);
+  return [`## ${titulo}`, '', ...utiles, ''].join('\n');
 }
 
 function cuerpo(): string {

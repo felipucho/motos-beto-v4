@@ -28,7 +28,7 @@ Todo lo verificable en el build está en orden.
 | Qué | Estado |
 | --- | --- |
 | Canónica | `https://motosbeto.com`, un solo host, autorreferencial |
-| Sitemap | `/sitemap.xml`, una URL, la canónica |
+| Sitemap | `/sitemap.xml`, una URL, la canónica, sin `lastmod` inventado |
 | Robots | `/robots.txt` abierto, con sitemap declarado |
 | Bots de IA | GPTBot, ClaudeBot, PerplexityBot y Google-Extended permitidos |
 | `llms.txt` | Presente, con el negocio descrito en prosa |
@@ -45,6 +45,14 @@ Todo lo verificable en el build está en orden.
 El `h1` es el activo más fuerte de la página: dice **Motos / Bicicletas /
 Repuestos / en Las Varillas**. Rubro y pueblo, en el elemento que más pesa, sin
 sonar a relleno de keywords porque es literalmente el cartel del negocio.
+
+Hasta la auditoría del 4 de septiembre no decía eso. Las cuatro líneas son
+`<span>` de bloque, y entre elementos JSX no queda ni un espacio: el texto que
+lee un extractor era `MotosBicicletasRepuestosen Las Varillas`, cuatro palabras
+pegadas que no forman ninguna palabra. Se veía perfecto y se leía mal, que es la
+peor combinación porque nadie lo nota mirando. Ahora hay un `{' '}` entre línea
+y línea —invisible, porque entre cajas de bloque el espacio colapsa— y el texto
+extraído es el que la tabla de arriba promete.
 
 ### Datos estructurados
 
@@ -147,6 +155,15 @@ de banda a las tipografías, que son las que deciden cuándo se puede leer el
 cartel. Ya no: va con `fetchPriority="high"`, que la pone temprano en la cola
 sin ocupar la primera ranura. Y se servía a 640 px de ancho para verse a 202:
 con AVIF y los anchos que el sitio pide de verdad quedó en 6 kB.
+
+A eso le faltaba una mitad, y la auditoría del 4 de septiembre la encontró:
+`next/image` le pone `loading="lazy"` a todo lo que no sea `priority`, así que
+la marca quedaba diferida. Una imagen diferida no la ve el escáner de precarga
+—espera al layout para decidir si está cerca de la pantalla—, o sea que el
+`fetchPriority="high"` no llegaba a hacer nada: no se puede priorizar un pedido
+que todavía no existe. Ahora lleva además `loading="eager"`, que es el punto
+medio real: se pide con el documento y sigue sin emitir el `<link rel=preload>`
+que le robaba la ranura a las tipografías.
 
 **El mapa se bajaba siempre.** Más de 200 kB de scripts, tipografías y azulejos
 de Google, para una sección que está a un scroll de distancia. Ahora hay una
@@ -253,6 +270,102 @@ enlazadas, con `contactPoint` para el fijo y el WhatsApp.
 
 **Se agregó `/data/negocio.json`,** que es el tercer registro de los mismos
 datos, generado desde la misma fuente y enlazado desde `llms.txt`.
+
+## Segunda ronda, 4 de septiembre de 2026
+
+Auditoría contra la [guía de Google][guia], dimensión por dimensión, con cada
+hallazgo verificado por dos revisores independientes antes de tocar nada. De 29
+hallazgos propuestos sobrevivieron 12; los otros 17 se descartaron por escrito.
+Lo que se descartó importa tanto como lo que se hizo, así que está más abajo.
+
+[guia]: https://developers.google.com/search/docs/fundamentals/seo-starter-guide
+
+**El `h1` no decía lo que parecía decir.** Está arriba, en Estado técnico: se
+leía `MotosBicicletasRepuestosen Las Varillas`.
+
+**La marca del encabezado estaba diferida.** Está arriba, en Rendimiento.
+
+**El escape del JSON-LD no escapaba nada.** La línea decía
+`.replace(/</g, '<')`, y en el fuente esa secuencia ya *es* el carácter
+`<`: reemplazaba `<` por `<`. Un no-op con forma de medida de seguridad, que es
+peor que no tener ninguna, porque se lee como resuelto. Hoy emite la secuencia
+literal de seis caracteres, que el parser de JSON vuelve a leer como `<` y el de
+HTML no reconoce como apertura de etiqueta. No había —ni hay— entrada de usuario
+en el sitio, así que nunca fue explotable; lo que se arregló es la maquinaria,
+para el día que un dato del negocio contenga un `</`.
+
+**El `<lastmod>` del sitemap era la hora del build.** Cualquier redespliegue lo
+reescribía como si hubiera cambiado un horario. Google usa `lastmod` mientras le
+cierra con la modificación real, y cuando no le cierra deja de mirarlo en todo
+el sitio: una fecha siempre falsa quema la señal justo para el día que sirva. Se
+sacó, junto con `changefreq` y `priority`, que Google declara que ignora. No se
+puso una fecha a mano porque se pudre sola y miente igual.
+
+**La página nunca decía que se venden motos.** La única vez que aparecía el
+verbo era la negación de los seguros —"No se venden"—. El dato estaba en el
+marcado (`MotorcycleDealer`, la `description` del `@graph`) y no en pantalla.
+`motos.condicion` abre ahora con "Venta de motos", que además saca de la primera
+línea la jerga de mostrador; como sale de `data/negocio.js`, corrige de una vez
+el HTML, `/llms.txt` y `/data/negocio.json`.
+
+**La dirección estaba escrita cinco veces en fuentes independientes:** la línea
+de texto y las tres URLs de Google en `data/negocio.js`, más las partes sueltas
+en `src/lib/negocio.ts`. Todas coincidían hoy, pero alcanzaba con corregir una
+para que el sitio publicara dos direcciones distintas —y la coherencia entre lo
+que dice el sitio y lo que dice la ficha es de lo poco que el código puede
+aportar a la búsqueda local—. Ahora hay un solo bloque `DIRECCION` del que sale
+todo. Se verificó que las tres URLs de Google salgan byte por byte iguales a las
+anteriores, y `tools/probar-mapa.mjs` confirma que siguen abriendo la ficha.
+
+**El `PostalAddress` no declaraba `postalCode`.** Se agregó `X5940`, que no es
+un dato nuevo: es el que publica la ficha de Google del propio negocio.
+
+**El favicon medía 256×256.** La guía de favicons de Google pide un cuadrado de
+lado múltiplo de 48, porque baja el archivo a 48 px para el resultado. Pasó a
+480 (48×10), que además es casi el doble del anterior: cumplir no costó
+resolución. Se comprobó que regenerar la marca deje las otras tres piezas
+idénticas.
+
+**El logo del encabezado prefetcheaba la página en la que ya estás.** El
+`<Link href="/">` hacía que el router bajara la carga RSC de la portada en cada
+visita. Con `prefetch={false}` la página pasó de 13 peticiones a 12.
+
+**La franja decía "Horario" los siete días.** Antes de hidratar no se sabe qué
+día es, así que el rótulo era genérico encima del horario de lunes a viernes
+—sábado incluido, cuando el sábado cierra al mediodía—. Ahora rotula el grupo
+que muestra: "Lunes a viernes" hasta que hidrata, "Hoy sábado" después.
+
+**`/llms.txt` salía con markdown roto.** Un `filter(Boolean)` se comía la línea
+en blanco puesta a propósito, y el párrafo final quedaba absorbido como
+continuación del último ítem de lista.
+
+**Los dos README de la marca y de las fotos documentaban cosas que el código no
+hace:** proporciones que no eran, una sección del sitio que no existe, la
+entrada `bicicletas` sin documentar, el favicon descrito con las tintas
+equivocadas y con un tamaño que el script nunca produjo.
+
+### Lo que se evaluó y se decidió no hacer
+
+Cada uno se descartó con evidencia, no por pereza:
+
+- **Sacar `<meta name="keywords">`.** Google documenta que no la usa. Justamente
+  por eso borrarla no mueve ninguna señal: no hay mejora que reclamar. Se deja.
+- **`noindex` en `/llms.txt` y `/data/negocio.json`.** Google no penaliza el
+  duplicado y elige el mejor resultado por consulta; contra una portada con
+  título, descripción, `@graph` y la única URL del sitemap, un `.txt` sin título
+  no compite. Bloquearlos sólo agregaría reglas que mantener.
+- **La canónica y el `robots` que hereda la 404.** La ruta responde 404 de
+  verdad, y Google descarta el cuerpo de una 404: no canonicaliza desde ahí ni
+  la indexa. Es ruido en el HTML, no una señal.
+- **Rutas por marca o por modelo** (`/motos/honda/…`). Sigue sin poder hacerse
+  sin inventar. Ver "Por qué no hay catálogo por modelo", más arriba.
+- **`sameAs` con la URL de la ficha de Google** y **`primaryImageOfPage`
+  apuntando a la imagen para compartir.** Los dos se revisaron a fondo y los dos
+  quedan: no contradicen nada de lo visible ni rompen ninguna regla del
+  vocabulario.
+- **Escribir la calle completa** ("Bartolomé Mitre") además de la abreviada. La
+  ficha de Google publica esa calle como `RN158`, así que el que hay que
+  corregir es el perfil, no el sitio.
 
 ## Lo que falta, y no es código
 
