@@ -70,13 +70,15 @@ export function DatosEstructurados() {
     priceRange: '$',
     currenciesAccepted: 'ARS',
     paymentAccepted: negocio.pagos.map((pago) => pago.forma).join(', '),
-    // Las marcas son la pregunta que más se hace en el mostrador —"¿tenés
-    // Honda?"— y la que un modelo necesita poder responder sin leer la página
-    // entera. Van como catálogo y no como `brand`, que en un comercio nombra la
-    // marca del comercio y no la de lo que vende.
-    hasOfferCatalog: [
-      catalogo('Motos', negocio.motos.marcas, 'Motorcycle'),
-      catalogo('Bicicletas', negocio.bicicletas.marcas, 'Product'),
+    // En Schema.org, la propiedad `brand` en una organización/negocio local 
+    // se define como: "La(s) marca(s) asociadas a un producto o servicio, o la(s)
+    // marca(s) mantenidas por la organización". Por lo tanto, es el lugar
+    // semánticamente correcto para listar las marcas que el negocio vende,
+    // en lugar de usar un catálogo con entidades Product/Motorcycle ficticias
+    // que disparan errores de "missing offers" en Google Search Console.
+    brand: [
+      ...negocio.motos.marcas.map((marca) => ({ '@type': 'Brand', name: marca })),
+      ...negocio.bicicletas.marcas.map((marca) => ({ '@type': 'Brand', name: marca })),
     ],
     makesOffer: [
       servicio('Taller de motos', negocio.taller.entrada),
@@ -175,17 +177,6 @@ export function DatosEstructurados() {
   );
 }
 
-/** Las marcas de un rubro, como catálogo de oferta. */
-function catalogo(nombre: string, marcas: readonly string[], tipo: string) {
-  return {
-    '@type': 'OfferCatalog',
-    name: nombre,
-    itemListElement: marcas.map((marca) => ({
-      '@type': 'Offer',
-      itemOffered: { '@type': tipo, name: marca, brand: { '@type': 'Brand', name: marca } },
-    })),
-  };
-}
 
 /**
  * Un servicio que el local presta, con la descripción que ya está en pantalla.
